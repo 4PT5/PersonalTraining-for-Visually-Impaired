@@ -53,6 +53,7 @@ def main():
         frame_count = 0
         iii = 0
         cnt = 0
+        tmp = 1
         while True:
             cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
@@ -97,11 +98,12 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
-            if(cnt % 5 == 0):
+            if(cnt % tmp == 0):
                 if(squat.main(keypoint_coords[0])):
                     print("main OK")
                     print("스쿼트 성공")
                     break
+                    print("\n-==============-\n")
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
