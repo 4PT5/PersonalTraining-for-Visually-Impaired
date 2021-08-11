@@ -4,6 +4,8 @@ import cv2
 import time
 import argparse
 import numpy as np
+
+import squat
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 parser = argparse.ArgumentParser()
@@ -23,6 +25,8 @@ position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "�
 spine_position = ["척추상", "척추중", "척추하"]
 
 # spine position을 구하기 위해 평균 구하는 함수.
+
+
 def getAverage(pos, n):
     x, y = 0, 0
 
@@ -48,7 +52,9 @@ def main():
         start = time.time()
         frame_count = 0
         iii = 0
+        cnt = 0
         while True:
+            cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
                 cap, scale_factor=args.scale_factor, output_stride=output_stride)
 
@@ -91,13 +97,19 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
+            if(cnt % 5 == 0):
+                if(squat.main(keypoint_coords[0])):
+                    print("main OK")
+                    print("스쿼트 성공")
+                    break
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
                 display_image, pose_scores, keypoint_scores, keypoint_coords,
                 min_pose_score=0.15, min_part_score=0.1)
-            
-            overlay_image = cv2.resize(overlay_image, dsize = (640,360), interpolation=cv2.INTER_AREA)
+
+            overlay_image = cv2.resize(overlay_image, dsize=(
+                640, 360), interpolation=cv2.INTER_AREA)
             cv2.imshow('posenet', overlay_image)
             frame_count += 1
             if cv2.waitKey(1) & 0xFF == ord('q'):
