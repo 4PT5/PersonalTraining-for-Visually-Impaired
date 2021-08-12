@@ -6,6 +6,7 @@ import argparse
 import numpy as np
 
 import squat
+import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 parser = argparse.ArgumentParser()
@@ -53,7 +54,9 @@ def main():
         frame_count = 0
         iii = 0
         cnt = 0
-        tmp = 1
+        cycle = 5
+        init = True
+        init2 = False
         while True:
             cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
@@ -98,7 +101,14 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
-            if(cnt % tmp == 0):
+            if(init):
+                if(cnt % cycle == 0 and ready.isReady(keypoint_coords[0])):
+                    init = False
+                    init2 = True
+            elif(init2):
+                if(cnt % cycle == 0 and ready.isSide(keypoint_coords[0])):
+                    init2 = False
+            else:
                 if(squat.main(keypoint_coords[0])):
                     print("main OK")
                     print("스쿼트 성공")
