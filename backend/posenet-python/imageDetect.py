@@ -12,9 +12,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=int, default=101)
 parser.add_argument('--scale_factor', type=float, default=1.0)
 parser.add_argument('--notxt', action='store_true')
-parser.add_argument('--image_dir', type=str, default= 'backend/posenet-python/images')
-parser.add_argument('--output_dir', type=str, default='backend/posenet-python/output')
+parser.add_argument('--image_dir', type=str, default='./images')
+parser.add_argument('--output_dir', type=str, default='./output')
 args = parser.parse_args()
+
 
 def getAverage(pos, n):
     x, y = 0, 0
@@ -24,6 +25,7 @@ def getAverage(pos, n):
         y += pos[i][1]
 
     return [x/n, y/n]
+
 
 def main():
     keypointList = []
@@ -77,13 +79,13 @@ def main():
                 keypoint_scores = np.concatenate(
                     (keypoint_scores, np.array([[1], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00]])), axis=1)
 
-
             if args.output_dir:
                 draw_image = posenet.draw_skel_and_kp(
                     draw_image, pose_scores, keypoint_scores, keypoint_coords,
                     min_pose_score=0.25, min_part_score=0.25)
 
-                cv2.imwrite(os.path.join(args.output_dir, os.path.relpath(f, args.image_dir)), draw_image)
+                cv2.imwrite(os.path.join(args.output_dir,
+                            os.path.relpath(f, args.image_dir)), draw_image)
 
             if not args.notxt:
                 for pi in range(len(pose_scores)):
@@ -91,7 +93,7 @@ def main():
                         break
                     for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
                         keypointList.append(c)
-        
+
         return keypointList
 
 

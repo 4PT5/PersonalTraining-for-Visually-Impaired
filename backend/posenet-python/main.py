@@ -57,6 +57,14 @@ def main():
         cycle = 5
         init = True
         init2 = False
+        global flags
+        print("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 숨쉬기)")
+        exercise = int(input())
+        if(exercise == 1):
+            print("스쿼트 운동을 시작합니다.")
+        elif(exercise == 2):
+            print("숨쉬기 운동을 시작합니다.")
+
         while True:
             cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
@@ -108,10 +116,14 @@ def main():
             elif(init2):
                 if(cnt % cycle == 0 and ready.isSide(keypoint_coords[0])):
                     init2 = False
+                    squat.setting()
             else:
                 if(squat.main(keypoint_coords[0])):
                     print("main OK")
                     print("스쿼트 성공")
+                    #success_image = overlay_image.copy()
+                    #cv2.imshow('success_image', success_image)
+                    cv2.waitKey()
                     break
                     print("\n-==============-\n")
 
