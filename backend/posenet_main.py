@@ -2,22 +2,21 @@ import posenet
 import tensorflow as tf
 import cv2
 import time
-import argparse
 import numpy as np
-
-import squat
-import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=int, default=101)
-parser.add_argument('--cam_id', type=int, default=0)
-parser.add_argument('--cam_width', type=int, default=1280)
-parser.add_argument('--cam_height', type=int, default=720)
-parser.add_argument('--scale_factor', type=float, default=0.7125)
-parser.add_argument('--file', type=str, default=None,
-                    help="Optionally use a video file instead of a live camera")
-args = parser.parse_args()
+#parser = argparse.ArgumentParser()
+# parser = tools.argparser.parse_args([])
+# parser.add_argument('--model', type=int, default=101, dest="performance")
+# parser.add_argument('--cam_id', type=int, default=0)
+# parser.add_argument('--cam_width', type=int, default=1280)
+# parser.add_argument('--cam_height', type=int, default=720)
+# parser.add_argument('--scale_factor', type=float, default=0.7125)
+# parser.add_argument('--file', type=str, default=None,
+#                     help="Optionally use a video file instead of a live camera")
+# args = parser.parse_args()
+
+args = {"model": 101, "cam_id": 0, "cam_width": 1280, "cam_height": 720, "scale_factor": 0.7125, "file": None}
 
 position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "왼쪽어깨", "오른쪽어깨", "왼쪽팔꿈치", "오른쪽팔꿈치",
             "왼쪽손목", "오른쪽손목", "왼쪽골반부위", "오른쪽골반부위", "왼쪽무릎", "오른쪽무릎", "왼쪽발목", "오른쪽발목"]
@@ -26,8 +25,6 @@ position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "�
 spine_position = ["척추상", "척추중", "척추하"]
 
 # spine position을 구하기 위해 평균 구하는 함수.
-
-
 def getAverage(pos, n):
     x, y = 0, 0
 
@@ -39,36 +36,24 @@ def getAverage(pos, n):
 
 
 def main():
+    print("hi")
     with tf.Session() as sess:
-        model_cfg, model_outputs = posenet.load_model(args.model, sess)
+        model_cfg, model_outputs = posenet.load_model(args["model"], sess)
         output_stride = model_cfg['output_stride']
 
-        if args.file is not None:
-            cap = cv2.VideoCapture(args.file)
+        if args["file"] is not None:
+            cap = cv2.VideoCapture(args["file"])
         else:
-            cap = cv2.VideoCapture(args.cam_id)
-        cap.set(3, args.cam_width)
-        cap.set(4, args.cam_height)
+            cap = cv2.VideoCapture(args["cam_id"])
+        cap.set(3, args["cam_width"])
+        cap.set(4, args["cam_height"])
 
         start = time.time()
         frame_count = 0
         iii = 0
-        cnt = 0
-        cycle = 5
-        init = True
-        init2 = False
-        global flags
-        print("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 숨쉬기)")
-        exercise = int(input())
-        if(exercise == 1):
-            print("스쿼트 운동을 시작합니다.")
-        elif(exercise == 2):
-            print("숨쉬기 운동을 시작합니다.")
-
         while True:
-            cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
-                cap, scale_factor=args.scale_factor, output_stride=output_stride)
+                cap, scale_factor=args["scale_factor"], output_stride=output_stride)
 
             heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
                 model_outputs,
@@ -109,31 +94,13 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
-            if(init):
-                if(cnt % cycle == 0 and ready.isReady(keypoint_coords[0])):
-                    init = False
-                    init2 = True
-            elif(init2):
-                if(cnt % cycle == 0 and ready.isSide(keypoint_coords[0])):
-                    init2 = False
-                    squat.setting()
-            else:
-                if(squat.main(keypoint_coords[0])):
-                    print("main OK")
-                    print("스쿼트 성공")
-                    #success_image = overlay_image.copy()
-                    #cv2.imshow('success_image', success_image)
-                    cv2.waitKey()
-                    break
-                    print("\n-==============-\n")
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
                 display_image, pose_scores, keypoint_scores, keypoint_coords,
                 min_pose_score=0.15, min_part_score=0.1)
-
-            overlay_image = cv2.resize(overlay_image, dsize=(
-                640, 360), interpolation=cv2.INTER_AREA)
+            
+            overlay_image = cv2.resize(overlay_image, dsize = (640,360), interpolation=cv2.INTER_AREA)
             cv2.imshow('posenet', overlay_image)
             frame_count += 1
             if cv2.waitKey(1) & 0xFF == ord('q'):
