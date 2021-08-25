@@ -10,15 +10,6 @@ import squat
 import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('--model', type=int, default=101)
-# parser.add_argument('--cam_id', type=int, default=0)
-# parser.add_argument('--cam_width', type=int, default=1280)
-# parser.add_argument('--cam_height', type=int, default=720)
-# parser.add_argument('--scale_factor', type=float, default=0.7125)
-# parser.add_argument('--file', type=str, default=None,
-#                     help="Optionally use a video file instead of a live camera")
-# args = parser.parse_args()
 args = {"model": 101, "cam_id": 0, "cam_width": 1280,
         "cam_height": 720, "scale_factor": 0.7125, "file": None}
 
@@ -45,7 +36,7 @@ def main():
     with tf.Session() as sess:
         model_cfg, model_outputs = posenet.load_model(args['model'], sess)
         output_stride = model_cfg['output_stride']
-
+        # 내장 캠 : 0 , 외장 캠 : 1
         if args['file'] is not None:
             cap = cv2.VideoCapture(args['file'])
         else:
@@ -143,9 +134,6 @@ def main():
                 break
 
         print('Average FPS: ', frame_count / (time.time() - start))
-    str = "성공"
-    return str
-
 
 if __name__ == "__main__":
     main()
