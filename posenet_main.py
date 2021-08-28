@@ -10,8 +10,15 @@ import squat
 import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
-args = {"model": 101, "cam_id": 0, "cam_width": 1280,
-        "cam_height": 720, "scale_factor": 0.7125, "file": None}
+parser = argparse.ArgumentParser()
+parser.add_argument('--model', type=int, default=101)
+parser.add_argument('--cam_id', type=int, default=0)
+parser.add_argument('--cam_width', type=int, default=1280)
+parser.add_argument('--cam_height', type=int, default=720)
+parser.add_argument('--scale_factor', type=float, default=0.7125)
+parser.add_argument('--file', type=str, default=None,
+                    help="Optionally use a video file instead of a live camera")
+args = parser.parse_args()
 
 position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "왼쪽어깨", "오른쪽어깨", "왼쪽팔꿈치", "오른쪽팔꿈치",
             "왼쪽손목", "오른쪽손목", "왼쪽골반부위", "오른쪽골반부위", "왼쪽무릎", "오른쪽무릎", "왼쪽발목", "오른쪽발목"]
@@ -34,35 +41,29 @@ def getAverage(pos, n):
 
 def main():
     with tf.Session() as sess:
-        model_cfg, model_outputs = posenet.load_model(args['model'], sess)
+        model_cfg, model_outputs = posenet.load_model(args.model, sess)
         output_stride = model_cfg['output_stride']
         # 내장 캠 : 0 , 외장 캠 : 1
-        if args['file'] is not None:
-            cap = cv2.VideoCapture(args['file'])
+        if args.file is not None:
+            cap = cv2.VideoCapture(args.file)
         else:
-            cap = cv2.VideoCapture(args['cam_id'])
-        cap.set(3, args['cam_width'])
-        cap.set(4, args['cam_height'])
+            cap = cv2.VideoCapture(args.cam_id)
+        cap.set(3, args.cam_width)
+        cap.set(4, args.cam_height)
 
         start = time.time()
         frame_count = 0
-        iii = 0
         cnt = 0
         cycle = 5
         init = True
         init2 = False
-        global flags
-        print("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 숨쉬기)")
-        exercise = int(input())
-        if(exercise == 1):
-            print("스쿼트 운동을 시작합니다.")
-        elif(exercise == 2):
-            print("숨쉬기 운동을 시작합니다.")
+
+        exerciseCode = ready.selectExercise()
 
         while True:
             cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
-                cap, scale_factor=args['scale_factor'], output_stride=output_stride)
+                cap, scale_factor=args.scale_factor, output_stride=output_stride)
 
             heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
                 model_outputs,
@@ -118,8 +119,9 @@ def main():
                     #success_image = overlay_image.copy()
                     #cv2.imshow('success_image', success_image)
                     # cv2.waitKey()
-                    break
-                    print("\n-==============-\n")
+                    if squat.CNT == 5:
+                        print("수고하셨습니다. 프로그램이 종료됩니다.")
+                        break
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
@@ -134,6 +136,7 @@ def main():
                 break
 
         print('Average FPS: ', frame_count / (time.time() - start))
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,8 @@
 import math
 import imageDetect
 
+CNT = 0
+
 
 def getDegree(key1, key2, key3):
     x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - \
@@ -9,12 +11,14 @@ def getDegree(key1, key2, key3):
 
 
 def setting():
-    global d_LIMIT, s_LIMIT, LIMIT
+    global d_LIMIT, s_LIMIT, LIMIT, CNT
     arr = imageDetect.main()
     d_LIMIT = ((arr[11][0]-arr[13][0])+(arr[12][0]-arr[14][0]))/2
     s_LIMIT = getDegree(arr[17], arr[18], arr[19])
     LIMIT = abs(getDegree(arr[12], arr[14], arr[16]) +
                 getDegree(arr[11], arr[13], arr[15]))/2
+
+    print("카운트를 시작합니다. 5회 반복해주세요.")
 
 
 def squat_down(keypoint):
@@ -23,8 +27,6 @@ def squat_down(keypoint):
     hip_knee_l = keypoint[11][0]-keypoint[13][0]
     hip_knee_r = keypoint[12][0]-keypoint[14][0]
     hip_knee = (hip_knee_l+hip_knee_r)/2
-    #MAX_LIMIT = 50
-    #MIN_LIMIT = -60
     value = 30
     print("===================================================")
     print("1. squat_down")
@@ -44,8 +46,6 @@ def squat_down(keypoint):
 
 def squat_straight(keypoint):
     # keypoint[17] : 척수상, keypoint[18] : 척수중, keypoint[19] : 척추하
-    #MIN_LIMIT = -10
-    #MAX_LIMIT = 10
     value = 10
     angle = getDegree(keypoint[17], keypoint[18], keypoint[19])
 
@@ -70,7 +70,6 @@ def squat_straight(keypoint):
 def squat_knee_angle(keypoint):
     # keypoint[12] : 오른쪽골반, keypoint[14] : 오른쪽무릎, keypoint[16] : 오른쪽발목
     # keypoint[11] : 왼쪽골반, keypoint[13] : 왼쪽무릎, keypoint[15] : 왼쪽발목
-    #LIMIT = 75
     right_angle = getDegree(keypoint[12], keypoint[14], keypoint[16])
     left_angle = getDegree(keypoint[11], keypoint[13], keypoint[15])
     angle = abs((right_angle + left_angle) / 2)
@@ -90,6 +89,9 @@ def squat_knee_angle(keypoint):
 
 def main(keypoint):
     if(squat_down(keypoint) and squat_straight(keypoint) and squat_knee_angle(keypoint)):
+        global CNT
+        CNT += 1
+        print("성공한 횟수 : " + str(CNT))
         return True
     else:
         return False
