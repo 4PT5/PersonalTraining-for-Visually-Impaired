@@ -1,10 +1,15 @@
 import sys
+from PyQt5 import QtCore
 import cv2
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QMessageBox, QPushButton
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, \
+    QMessageBox, QPushButton, QMainWindow, QAction, qApp, QMenu, \
+    QHBoxLayout, QFrame, QSplitter,  QVBoxLayout, QWidget, QTextEdit, QLabel
+from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtGui import QIcon
+from stt import sttFunction
 
 
-class MyApp(QWidget):
+class MyApp(QWidget): 
 
     def __init__(self):
         super().__init__()
@@ -21,7 +26,8 @@ class MyApp(QWidget):
             self.setWindowTitle('PersonalTraining for Visually Impaired')
             self.resize(1376, 774)  # 16:9
             self.center()
-
+            self.setWindowIcon(QIcon('./image/Icon.png'))  # 아이콘 추가
+            self.qSplitter()
             self.show()
         else:
             sys.exit()
@@ -45,6 +51,47 @@ class MyApp(QWidget):
         btn.move(588, 710)
         btn.resize(200, 50)
         btn.clicked.connect(QCoreApplication.instance().quit)
+
+    def qSplitter(self):
+        vbox = QVBoxLayout()
+
+        top_layout1 = QHBoxLayout()
+
+        label1 = QLabel()
+        label1.setStyleSheet('image:url(./image/main_logo.png);')
+
+        dropdownMenu = QPushButton('Select Exercise')
+        menu = QMenu(self)
+        menu.addAction('Squat')
+        menu.addAction('exercise 1')
+        menu.addAction('exercise 2')
+        dropdownMenu.setMenu(menu)
+
+        btn1 = QPushButton()
+        btn1.setStyleSheet('image:url(./image/exit-icon.png)')
+        btn1.clicked.connect(QCoreApplication.instance().quit)
+
+        top_layout1.addWidget(label1)
+        top_layout1.addSpacing(900)
+        top_layout1.addWidget(dropdownMenu)
+        top_layout1.addWidget(btn1)
+
+        top = QFrame()
+        top.setFrameShape(QFrame.NoFrame)
+        top.setFrameShadow(QFrame.Plain)
+        top.setLayout(top_layout1)
+
+        bottom = QFrame()
+        bottom.setFrameShape(QFrame.NoFrame)
+        bottom.setFrameShadow(QFrame.Plain)
+
+        splitter1 = QSplitter(Qt.Vertical)
+        splitter1.addWidget(top)
+        splitter1.addWidget(bottom)
+        splitter1.setSizes([1, 400])
+
+        vbox.addWidget(splitter1)
+        self.setLayout(vbox)
 
 
 if __name__ == '__main__':
