@@ -7,6 +7,7 @@ import numpy as np
 from django.http import HttpResponse
 
 import squat
+import lunge
 import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
@@ -57,6 +58,7 @@ def main():
         cycle = 5
         init = True
         init2 = False
+        init3 = False
 
         exerciseCode = ready.selectExercise()
 
@@ -111,17 +113,27 @@ def main():
             elif(init2):
                 if(cnt % cycle == 0 and ready.isSide(keypoint_coords[0])):
                     init2 = False
-                    squat.setting()
+                    init3 = True
+                    if exerciseCode == 1:
+                        squat.setting()
+                    elif exerciseCode == 2:
+                        lunge.setting()
             else:
-                if(squat.main(keypoint_coords[0])):
-                    print("main OK")
-                    print("스쿼트 성공")
-                    #success_image = overlay_image.copy()
-                    #cv2.imshow('success_image', success_image)
-                    # cv2.waitKey()
-                    if squat.CNT == 5:
-                        print("수고하셨습니다. 프로그램이 종료됩니다.")
-                        break
+                if exerciseCode == 1:
+                    if(squat.main(keypoint_coords[0])):
+                        print("main OK")
+                        print("스쿼트 성공")
+                        #success_image = overlay_image.copy()
+                        #cv2.imshow('success_image', success_image)
+                        # cv2.waitKey()
+                        if squat.CNT == 5:
+                            print("수고하셨습니다. 프로그램이 종료됩니다.")
+                            break
+                elif exerciseCode == 2:
+                    if(init3 and lunge.main(keypoint_coords[0], 0)):
+                        init3 = False
+                    else:
+                        lunge.main(keypoint_coords[0], 1)
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
