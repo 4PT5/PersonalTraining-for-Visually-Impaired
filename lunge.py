@@ -14,7 +14,7 @@ def setting():
     global d_LIMIT, s_LIMIT, LIMIT, CNT
     arr = imageDetect.main()
     d_LIMIT = arr[12][0]-arr[14][0]
-    s_LIMIT = getDegree(arr[17], arr[18], arr[19])
+    s_LIMIT = getDegree(arr[12], arr[18], arr[14]) # 상체-무릎 각도 limit
     LIMIT = abs(getDegree(arr[12], arr[14], arr[16]))
 
     print("카운트를 시작합니다. 5회 반복해주세요.")
@@ -38,10 +38,10 @@ def lunge_knee_angle(keypoint, i):
         return False
 
 # 상체 기울기 체크
-def lunge_straight(keypoint):
-    # keypoint[17] : 척수상, keypoint[18] : 척수중, keypoint[19] : 척추하
-    value = 10
-    angle = getDegree(keypoint[17], keypoint[18], keypoint[19])
+def lunge_straight(keypoint, i):
+    # keypoint[11] : 왼쪽골반, keypoint[18] : 척수중, keypoint[13] : 왼쪽 무릎
+    value = 10 # testing 후 적당한 값 찾아야함
+    angle = getDegree(keypoint[11+i], keypoint[18], keypoint[13+i])
 
     print("------------------")
     print("2. lunge_straight")
@@ -83,7 +83,7 @@ def lunge_tiptoe(keypoint, i):
 
 def main(keypoint):
     for i in range (0,2):
-        if lunge_knee_angle(keypoint, i) and lunge_straight(keypoint) and lunge_tiptoe(keypoint, i):
+        if lunge_knee_angle(keypoint, i) and lunge_straight(keypoint, i) and lunge_tiptoe(keypoint, i):
             return True
         else:
             return False
