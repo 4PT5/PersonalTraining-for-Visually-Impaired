@@ -130,10 +130,14 @@ def main():
                             print("수고하셨습니다. 프로그램이 종료됩니다.")
                             break
                 elif exerciseCode == 2:
-                    if(init3 and lunge.main(keypoint_coords[0], 0)):
-                        init3 = False
-                    else:
-                        lunge.main(keypoint_coords[0], 1)
+                    if(lunge.main(keypoint_coords[0])):
+                        print("main OK")
+                        print("런지 성공")
+                        break
+                    # if(init3 and lunge.main(keypoint_coords[0], 0)):
+                    #     init3 = False
+                    # else:
+                    #     lunge.main(keypoint_coords[0], 1)
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
