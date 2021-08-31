@@ -10,15 +10,14 @@ def getDegree(key1, key2, key3):
     return x*180/math.pi
 
 
-def setting():
-    global d_LIMIT, s_LIMIT, LIMIT, CNT
-    arr = imageDetect.main()
+def setting(exCode):
+    global d_LIMIT, s_LIMIT, LIMIT, CNT, cnt_flag
+    arr = imageDetect.main(exCode)
     d_LIMIT = ((arr[11][0]-arr[13][0])+(arr[12][0]-arr[14][0]))/2
     s_LIMIT = getDegree(arr[17], arr[18], arr[19])
     LIMIT = abs(getDegree(arr[12], arr[14], arr[16]) +
                 getDegree(arr[11], arr[13], arr[15]))/2
-
-    print("카운트를 시작합니다. 5회 반복해주세요.")
+    cnt_flag = True
 
 
 def squat_down(keypoint):
@@ -28,18 +27,20 @@ def squat_down(keypoint):
     hip_knee_r = keypoint[12][0]-keypoint[14][0]
     hip_knee = (hip_knee_l+hip_knee_r)/2
     value = 30
+    isStand = d_LIMIT - value > hip_knee or hip_knee > d_LIMIT + value
     print("===================================================")
     print("1. squat_down")
     print("d_LIMIT")
     print(d_LIMIT)
     print(hip_knee)
-    if(hip_knee > d_LIMIT + value):
-        print("조금 일어나세요.")
-        return False
-    elif(d_LIMIT - value <= hip_knee <= d_LIMIT + value):
+
+    if(d_LIMIT - value <= hip_knee <= d_LIMIT + value):
         print("checkpoint #2 OK")
         return True
-    else:
+    elif(hip_knee > d_LIMIT + value):
+        print("조금 일어나세요.")
+        return False
+    elif(hip_knee < d_LIMIT - value):
         print("조금 더 앉으세요")
         return False
 
@@ -87,8 +88,32 @@ def squat_knee_angle(keypoint):
         return False
 
 
-def main(keypoint):
+def squat_count(keypoint):
+    # keypoint[11][0] : 왼쪽 골반 y좌표, keypoint[13][0] : 왼쪽 무릎 y좌표
+    # keypoint[12][0] : 오른쪽 골반 y좌표, keypoint[14][0] : 오른쪽 무릎 y좌표
+    hip_knee_l = keypoint[11][0]-keypoint[13][0]
+    hip_knee_r = keypoint[12][0]-keypoint[14][0]
+    hip_knee = (hip_knee_l+hip_knee_r)/2
+    value = 35
+    global cnt_flag
+
+    if(cnt_flag and d_LIMIT - value <= hip_knee <= d_LIMIT + value):
+        cnt_flag = False
+        return True
+    elif d_LIMIT - value > hip_knee or hip_knee > d_LIMIT + value:
+        cnt_flag = True
+        return False
+
+
+def postureCorrection(keypoint):
     if(squat_down(keypoint) and squat_straight(keypoint) and squat_knee_angle(keypoint)):
+        return True
+    else:
+        return False
+
+
+def counting(keypoint):
+    if squat_count(keypoint):
         global CNT
         CNT += 1
         print("성공한 횟수 : " + str(CNT))

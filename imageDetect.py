@@ -26,7 +26,7 @@ def getAverage(pos, n):
     return [x/n, y/n]
 
 
-def main():
+def main(exerciseCode):
     keypointList = []
 
     with tf.Session() as sess:
@@ -40,63 +40,65 @@ def main():
         filenames = [
             f.path for f in os.scandir(args.image_dir) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
+        exercise = {1: 'squat', 2: 'lunge'}
+        f = './images\\' + exercise[exerciseCode] + '.jpg'
         start = time.time()
-        for f in filenames:
-            input_image, draw_image, output_scale = posenet.read_imgfile(
-                f, scale_factor=args.scale_factor, output_stride=output_stride)
 
-            heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
-                model_outputs,
-                feed_dict={'image:0': input_image}
-            )
+        input_image, draw_image, output_scale = posenet.read_imgfile(
+            f, scale_factor=args.scale_factor, output_stride=output_stride)
 
-            pose_scores, keypoint_scores, keypoint_coords = posenet.decode_multiple_poses(
-                heatmaps_result.squeeze(axis=0),
-                offsets_result.squeeze(axis=0),
-                displacement_fwd_result.squeeze(axis=0),
-                displacement_bwd_result.squeeze(axis=0),
-                output_stride=output_stride,
-                max_pose_detections=10,
-                min_pose_score=0.25)
+        heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
+            model_outputs,
+            feed_dict={'image:0': input_image}
+        )
 
-            keypoint_coords *= output_scale
+        pose_scores, keypoint_scores, keypoint_coords = posenet.decode_multiple_poses(
+            heatmaps_result.squeeze(axis=0),
+            offsets_result.squeeze(axis=0),
+            displacement_fwd_result.squeeze(axis=0),
+            displacement_bwd_result.squeeze(axis=0),
+            output_stride=output_stride,
+            max_pose_detections=10,
+            min_pose_score=0.25)
 
-            spineTop = getAverage(
-                [keypoint_coords[0][5], keypoint_coords[0][6]], 2)
-            spineMiddle = getAverage(
-                [keypoint_coords[0][5], keypoint_coords[0][6], keypoint_coords[0][11], keypoint_coords[0][12]], 4)
-            spineBottom = getAverage(
-                [keypoint_coords[0][11], keypoint_coords[0][12]], 2)
+        keypoint_coords *= output_scale
 
-            spine_pos = [spineTop, spineMiddle, spineBottom]
+        spineTop = getAverage(
+            [keypoint_coords[0][5], keypoint_coords[0][6]], 2)
+        spineMiddle = getAverage(
+            [keypoint_coords[0][5], keypoint_coords[0][6], keypoint_coords[0][11], keypoint_coords[0][12]], 4)
+        spineBottom = getAverage(
+            [keypoint_coords[0][11], keypoint_coords[0][12]], 2)
 
-            for i in range(3):
-                tmp = np.array([[spine_pos[i]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[
-                    0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]]])
-                keypoint_coords = np.concatenate(
-                    (keypoint_coords, tmp), axis=1)
-                keypoint_scores = np.concatenate(
-                    (keypoint_scores, np.array([[1], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00]])), axis=1)
+        spine_pos = [spineTop, spineMiddle, spineBottom]
 
-            if args.output_dir:
-                draw_image = posenet.draw_skel_and_kp(
-                    draw_image, pose_scores, keypoint_scores, keypoint_coords,
-                    min_pose_score=0.25, min_part_score=0.25)
+        for i in range(3):
+            tmp = np.array([[spine_pos[i]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[
+                0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]]])
+            keypoint_coords = np.concatenate(
+                (keypoint_coords, tmp), axis=1)
+            keypoint_scores = np.concatenate(
+                (keypoint_scores, np.array([[1], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00], [0.00000000e+00]])), axis=1)
 
-                cv2.imwrite(os.path.join(args.output_dir,
-                            os.path.relpath(f, args.image_dir)), draw_image)
+        if args.output_dir:
+            draw_image = posenet.draw_skel_and_kp(
+                draw_image, pose_scores, keypoint_scores, keypoint_coords,
+                min_pose_score=0.25, min_part_score=0.25)
 
-            # if not args.notxt':
-            #     for pi in range(len(pose_scores)):
-            #         if pose_scores[pi] == 0.:
-            #             break
-            #         for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
-            #             keypointList.append(c)
-            for pi in range(len(pose_scores)):
-                if pose_scores[pi] == 0.:
-                    break
-                for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
-                    keypointList.append(c)
+            cv2.imwrite(os.path.join(args.output_dir,
+                        os.path.relpath(f, args.image_dir)), draw_image)
+
+        # if not args.notxt':
+        #     for pi in range(len(pose_scores)):
+        #         if pose_scores[pi] == 0.:
+        #             break
+        #         for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
+        #             keypointList.append(c)
+        for pi in range(len(pose_scores)):
+            if pose_scores[pi] == 0.:
+                break
+            for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
+                keypointList.append(c)
 
         return keypointList
 
