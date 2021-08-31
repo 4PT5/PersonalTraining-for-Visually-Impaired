@@ -10,9 +10,9 @@ def getDegree(key1, key2, key3):
     return x*180/math.pi
 
 
-def setting():
+def setting(exCode):
     global d_LIMIT, s_LIMIT, LIMIT, CNT
-    arr = imageDetect.main()
+    arr = imageDetect.main(exCode)
     d_LIMIT = arr[11][0]-arr[13][0]
     s_LIMIT = getDegree(arr[11], arr[18], arr[13])  # 상체-무릎 각도 limit
     LIMIT = abs(getDegree(arr[11], arr[13], arr[15]))
@@ -85,7 +85,7 @@ def lunge_tiptoe(keypoint, i):
         return False
 
 
-def main(keypoint):
+def postureCorrection(keypoint):
     global flag_lr
     flag_lr = True
 
