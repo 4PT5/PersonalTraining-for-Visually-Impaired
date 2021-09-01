@@ -107,6 +107,7 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
+
             if (cnt % cycle == 0):
                 if(init):
                     if(ready.isReady(keypoint_coords[0])):
