@@ -1,12 +1,12 @@
 import posenet
 import tensorflow as tf
 import cv2
-import time
 import argparse
 import numpy as np
 from django.http import HttpResponse
 
 import squat
+import lunge
 import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
@@ -54,9 +54,10 @@ def main():
         start = time.time()
         frame_count = 0
         cnt = 0
-        cycle = 5
+        cycle = 2
         init = True
         init2 = False
+        init3 = False
 
         exerciseCode = ready.selectExercise()
 
@@ -104,24 +105,42 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
-            if(init):
-                if(cnt % cycle == 0 and ready.isReady(keypoint_coords[0])):
-                    init = False
-                    init2 = True
-            elif(init2):
-                if(cnt % cycle == 0 and ready.isSide(keypoint_coords[0])):
-                    init2 = False
-                    squat.setting()
-            else:
-                if(squat.main(keypoint_coords[0])):
-                    print("main OK")
-                    print("스쿼트 성공")
-                    #success_image = overlay_image.copy()
-                    #cv2.imshow('success_image', success_image)
-                    # cv2.waitKey()
-                    if squat.CNT == 5:
-                        print("수고하셨습니다. 프로그램이 종료됩니다.")
-                        break
+
+            if (cnt % cycle == 0):
+                if(init):
+                    if(ready.isReady(keypoint_coords[0])):
+                        init = False
+                        init2 = True
+                elif(init2):
+                    if(ready.isSide(keypoint_coords[0])):
+                        init2 = False
+                        init3 = True
+                        if exerciseCode == 1:
+                            squat.setting(exerciseCode)
+                        elif exerciseCode == 2:
+                            lunge.setting(exerciseCode)
+                elif(init3):
+                    if exerciseCode == 1:
+                        if(squat.postureCorrection(keypoint_coords[0])):
+                            print("postureCorrection OK")
+                            print("스쿼트 성공")
+                            print("카운트를 시작합니다. 5회 반복해주세요.")
+                            init3 = False
+                    elif exerciseCode == 2:
+                        if(lunge.postureCorrection(keypoint_coords[0])):
+                            print("postureCorrection OK")
+                            print("런지 성공")
+                            init3 = False
+                else:
+                    if exerciseCode == 1:
+                        if(squat.counting(keypoint_coords[0])):
+                            if squat.CNT == 5:
+                                print("스쿼트 5회를 마쳤습니다.")
+                                break
+                    elif exerciseCode == 2:
+                        if(lunge.main(keypoint_coords[0])):
+                            # 런지 카운트 함수 구현해서 불러와야함.
+                            break
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(

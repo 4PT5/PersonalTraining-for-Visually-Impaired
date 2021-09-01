@@ -1,12 +1,15 @@
 def selectExercise():
-    print("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 숨쉬기)")
+    print("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 런지, 3: 숨쉬기)")
     exercise = int(input())
     if(exercise == 1):
         print("스쿼트 운동을 시작합니다.")
         return 1
     elif(exercise == 2):
-        print("숨쉬기 운동을 시작합니다.")
+        print("런지 운동을 시작합니다.")
         return 2
+    elif(exercise == 3):
+        print("숨쉬기 운동을 시작합니다.")
+        return 3
 
 
 def isReady(keypoint):
