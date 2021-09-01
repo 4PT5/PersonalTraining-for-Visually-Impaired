@@ -1,14 +1,10 @@
 import sys
 import cv2
 import numpy as np
-from PyQt5 import QtCore
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, \
-    QMessageBox, QPushButton, QMainWindow, QAction, qApp, QMenu, \
-    QHBoxLayout, QFrame, QSplitter,  QVBoxLayout, QWidget, QTextEdit, QLabel
-from PyQt5.QtCore import QCoreApplication, Qt, pyqtSignal, pyqtSlot, QThread
-from PyQt5.QtGui import QIcon, QPixmap
-from stt import sttFunction
+from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QVBoxLayout, QDesktopWidget, QMessageBox, QPushButton
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 
 
 class VideoThread(QThread):
@@ -34,83 +30,40 @@ class VideoThread(QThread):
         self.wait()
 
 
-class MyApp(QWidget):
-
+class App(QWidget):
     def __init__(self):
         super().__init__()
         self.center()
         self.initUI()
 
     def initUI(self):
-        # 메세지 박스를 통해 시작
-        buttonReply = QMessageBox.question(
-            self, 'Start message', "Personal Training을 시작하시겠습니까?", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-        if self.startMessage:
-            self.setWindowTitle('PersonalTraining for Visually Impaired')
-            self.disply_width = 1376
-            self.display_height = 774
-            self.webcam_width = 1280
-            self.webcam_height = 720
-            self.resize(1376, 774)  # 16:9
-            self.center()
-            self.setWindowIcon(QIcon('./image/Icon.png'))  # 아이콘 추가
-            self.qSplitter()
+        self.setWindowTitle('PersonalTraining for Visually Impaired')
+        self.setWindowIcon(QIcon('./image/Icon.png'))  # 아이콘 추가
+        self.display_width = 1100
+        self.display_height = 1000
+        self.webcam_width = 1100
+        self.webcam_height = 900
+        self.resize(self.display_width, self.display_height)  # 16:9
+        self.center()
 
-        else:
-            sys.exit()
-
-    def center(self):  # 창을 화면 중앙으로
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-    def startMessage(self):
-        buttonReply = QMessageBox.question(
-            self, 'Start message', "Personal Training을 시작하시겠습니까?", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-        if buttonReply == QMessageBox.Yes:
-            return True
-        else:
-            return False
-
-    def quitButton(self):
-        btn = QPushButton('Quit', self)
-        btn.move(588, 710)
-        btn.resize(200, 50)
-        btn.clicked.connect(QCoreApplication.instance().quit)
-
-    def qSplitter(self):
-        vbox = QVBoxLayout()
-
-        top_layout1 = QHBoxLayout()
-
-        dropdownMenu = QPushButton('Select Exercise')
-        menu = QMenu(self)
-        menu.addAction('Squat')
-        menu.addAction('exercise 1')
-        menu.addAction('exercise 2')
-        dropdownMenu.setMenu(menu)
-
-        btn1 = QPushButton()
-        btn1.setStyleSheet('image:url(./image/exit-icon.png)')
-        btn1.clicked.connect(QCoreApplication.instance().quit)
-
-        top_layout1.addSpacing(900)
-        top_layout1.addWidget(dropdownMenu)
-        top_layout1.addWidget(btn1)
-
-        top = QFrame()
-        top.setFrameShape(QFrame.NoFrame)
-        top.setFrameShadow(QFrame.Plain)
-        top.setLayout(top_layout1)
-
-        bottom_layout = QHBoxLayout()
-
+        # create the label that holds the image
         self.image_label = QLabel(self)
         self.image_label.resize(self.webcam_width, self.webcam_height)
+        # create a text label
+        # self.textLabel = QLabel('Webcam')
 
         # create a vertical box layout and add the two labels
-        bottom_layout.addWidget(self.image_label)
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.image_label)
+        # vbox.addWidget(self.textLabel)
+        # set the vbox layout as the widgets layout
+        label1 = QLabel('First Label', self)
+        vbox.addWidget(label1)
+        label1.setAlignment(Qt.AlignCenter)
+        font1 = label1.font()
+        font1.setPointSize(20)
+        label1.setFont(font1)
+        self.setLayout(vbox)
 
         # create the video capture thread
         self.thread = VideoThread()
@@ -119,18 +72,11 @@ class MyApp(QWidget):
         # start the thread
         self.thread.start()
 
-        bottom = QFrame()
-        bottom.setFrameShape(QFrame.NoFrame)
-        bottom.setFrameShadow(QFrame.Plain)
-        bottom.setLayout(bottom_layout)
-
-        splitter1 = QSplitter(Qt.Vertical)
-        splitter1.addWidget(top)
-        splitter1.addWidget(bottom)
-        splitter1.setSizes([1, 400])
-
-        vbox.addWidget(splitter1)
-        self.setLayout(vbox)
+    def center(self):  # 창을 화면 중앙으로
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
 
     def closeEvent(self, event):
         self.thread.stop()
@@ -154,8 +100,8 @@ class MyApp(QWidget):
         return QPixmap.fromImage(p)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    a = MyApp()
+    a = App()
     a.show()
     sys.exit(app.exec_())
