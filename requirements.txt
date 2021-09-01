@@ -1,0 +1,21 @@
+# pip install -r requirements.txt
+
+# Django---------------------
+Django
+djangorestframework
+django-cors-headers
+
+# posenet--------------------
+tensorflow==1.15.5
+numpy
+scipy
+yaml
+opencv-python
+
+# STT&TTS-------------------
+pyttsx3
+SpeechRecognition
+pyaudio
+
+# GUI-------------------------
+Pyqt5

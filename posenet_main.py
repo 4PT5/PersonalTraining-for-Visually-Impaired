@@ -11,20 +11,23 @@ import lunge
 import ready
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=int, default=101)
-parser.add_argument('--cam_id', type=int, default=0)
-parser.add_argument('--cam_width', type=int, default=1280)
-parser.add_argument('--cam_height', type=int, default=720)
-parser.add_argument('--scale_factor', type=float, default=0.7125)
-parser.add_argument('--file', type=str, default=None,
-                    help="Optionally use a video file instead of a live camera")
-args = parser.parse_args()
+# parser = argparse.ArgumentParser()
+# parser.add_argument('--model', type=int, default=101)
+# parser.add_argument('--cam_id', type=int, default=0)
+# parser.add_argument('--cam_width', type=int, default=1280)
+# parser.add_argument('--cam_height', type=int, default=720)
+# parser.add_argument('--scale_factor', type=float, default=0.7125)
+# parser.add_argument('--file', type=str, default=None,
+#                     help="Optionally use a video file instead of a live camera")
+# args = parser.parse_args()
+
+args = {"model": 101, "scale_factor": 1.0, "notxt": True, "image_dir": './images',
+        "output_dir": './output'}
 
 position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "왼쪽어깨", "오른쪽어깨", "왼쪽팔꿈치", "오른쪽팔꿈치",
             "왼쪽손목", "오른쪽손목", "왼쪽골반부위", "오른쪽골반부위", "왼쪽무릎", "오른쪽무릎", "왼쪽발목", "오른쪽발목"]
 
-# 철추상 : Spine At The Shoulder , 척추중 : Middle Of The Spine , 척추하 : Base Of Spine
+# 척추상 : Spine At The Shoulder , 척추중 : Middle Of The Spine , 척추하 : Base Of Spine
 spine_position = ["척추상", "척추중", "척추하"]
 
 # spine position을 구하기 위해 평균 구하는 함수.
@@ -42,15 +45,12 @@ def getAverage(pos, n):
 
 def main():
     with tf.Session() as sess:
-        model_cfg, model_outputs = posenet.load_model(args.model, sess)
+        model_cfg, model_outputs = posenet.load_model(args['model'], sess)
         output_stride = model_cfg['output_stride']
         # 내장 캠 : 0 , 외장 캠 : 1
-        if args.file is not None:
-            cap = cv2.VideoCapture(args.file)
-        else:
-            cap = cv2.VideoCapture(args.cam_id)
-        cap.set(3, args.cam_width)
-        cap.set(4, args.cam_height)
+        cap = cv2.VideoCapture(0)
+        cap.set(3, 640)
+        cap.set(4, 360)
 
         start = time.time()
         frame_count = 0
@@ -65,7 +65,7 @@ def main():
         while True:
             cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
-                cap, scale_factor=args.scale_factor, output_stride=output_stride)
+                cap, scale_factor=args['scale_factor'], output_stride=output_stride)
 
             heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
                 model_outputs,
@@ -106,12 +106,10 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
-            if(cnt == 1):
-                print("10초 후에 시작합니다. 자리를 잡아주세요.\n\n")
 
             if (cnt % cycle == 0):
                 if(init):
-                    if(cnt > 30 and ready.isReady(keypoint_coords[0])):
+                    if(ready.isReady(keypoint_coords[0])):
                         init = False
                         init2 = True
                 elif(init2):
@@ -120,15 +118,14 @@ def main():
                         init3 = True
                         if exerciseCode == 1:
                             squat.setting(exerciseCode)
-                            print("스쿼트란,,,,,, 설명")
-                            print("자세를 잡아주세요")
                         elif exerciseCode == 2:
                             lunge.setting(exerciseCode)
                 elif(init3):
                     if exerciseCode == 1:
                         if(squat.postureCorrection(keypoint_coords[0])):
-                            print("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
-                            cnt = 2
+                            print("postureCorrection OK")
+                            print("스쿼트 성공")
+                            print("카운트를 시작합니다. 5회 반복해주세요.")
                             init3 = False
                     elif exerciseCode == 2:
                         if(lunge.postureCorrection(keypoint_coords[0])):
@@ -137,11 +134,9 @@ def main():
                             init3 = False
                 else:
                     if exerciseCode == 1:
-                        if(cnt == 30):
-                            print("시작해주세요.")
-                        elif(cnt > 30 and squat.counting(keypoint_coords[0])):
+                        if(squat.counting(keypoint_coords[0])):
                             if squat.CNT == 5:
-                                print("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
+                                print("스쿼트 5회를 마쳤습니다.")
                                 break
                     elif exerciseCode == 2:
                         if(lunge.main(keypoint_coords[0])):
