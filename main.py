@@ -3,7 +3,6 @@ import tensorflow as tf
 import cv2
 import argparse
 import numpy as np
-import time
 from django.http import HttpResponse
 
 import squat
