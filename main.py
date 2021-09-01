@@ -5,6 +5,7 @@ import argparse
 import numpy as np
 from django.http import HttpResponse
 
+import time
 import squat
 import lunge
 import ready
@@ -105,10 +106,12 @@ def main():
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
+            if(cnt == 1):
+                print("10초 후에 시작합니다. 자리를 잡아주세요.\n\n")
 
             if (cnt % cycle == 0):
                 if(init):
-                    if(ready.isReady(keypoint_coords[0])):
+                    if(cnt > 30 and ready.isReady(keypoint_coords[0])):
                         init = False
                         init2 = True
                 elif(init2):
@@ -117,14 +120,15 @@ def main():
                         init3 = True
                         if exerciseCode == 1:
                             squat.setting(exerciseCode)
+                            print("스쿼트란,,,,,, 설명")
+                            print("자세를 잡아주세요")
                         elif exerciseCode == 2:
                             lunge.setting(exerciseCode)
                 elif(init3):
                     if exerciseCode == 1:
                         if(squat.postureCorrection(keypoint_coords[0])):
-                            print("postureCorrection OK")
-                            print("스쿼트 성공")
-                            print("카운트를 시작합니다. 5회 반복해주세요.")
+                            print("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
+                            cnt = 2
                             init3 = False
                     elif exerciseCode == 2:
                         if(lunge.postureCorrection(keypoint_coords[0])):
@@ -133,9 +137,11 @@ def main():
                             init3 = False
                 else:
                     if exerciseCode == 1:
-                        if(squat.counting(keypoint_coords[0])):
+                        if(cnt == 30):
+                            print("시작해주세요.")
+                        elif(cnt > 30 and squat.counting(keypoint_coords[0])):
                             if squat.CNT == 5:
-                                print("스쿼트 5회를 마쳤습니다.")
+                                print("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
                     elif exerciseCode == 2:
                         if(lunge.main(keypoint_coords[0])):

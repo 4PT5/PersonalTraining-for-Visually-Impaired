@@ -28,20 +28,16 @@ def squat_down(keypoint):
     hip_knee = (hip_knee_l+hip_knee_r)/2
     value = 30
     isStand = d_LIMIT - value > hip_knee or hip_knee > d_LIMIT + value
-    print("===================================================")
-    print("1. squat_down")
-    print("d_LIMIT")
-    print(d_LIMIT)
-    print(hip_knee)
 
     if(d_LIMIT - value <= hip_knee <= d_LIMIT + value):
-        print("checkpoint #2 OK")
         return True
     elif(hip_knee > d_LIMIT + value):
-        print("조금 일어나세요.")
+        print("1: 조금 일어나세요.")
         return False
-    elif(hip_knee < d_LIMIT - value):
-        print("조금 더 앉으세요")
+    elif(-100 < hip_knee < d_LIMIT - value):
+        print("1: 조금 더 앉으세요")
+        return False
+    else:
         return False
 
 
@@ -50,21 +46,15 @@ def squat_straight(keypoint):
     value = 10
     angle = getDegree(keypoint[17], keypoint[18], keypoint[19])
 
-    print("------------------")
-    print("2. squat_straight")
-    print("s_LIMIT")
-    print(s_LIMIT)
-    print(angle)
     if s_LIMIT-value <= angle <= s_LIMIT+value:
-        print("OK")
         return True
 
     elif angle < s_LIMIT-value:
-        print("조금 더 허리를 세워주세요.")
+        print("2: 조금 더 허리를 세워주세요.")
         return False
 
     elif angle > s_LIMIT+value:
-        print("조금 더 허리를 구부려주세요.")
+        print("2: 조금 더 허리를 구부려주세요.")
         return False
 
 
@@ -75,16 +65,10 @@ def squat_knee_angle(keypoint):
     left_angle = getDegree(keypoint[11], keypoint[13], keypoint[15])
     angle = abs((right_angle + left_angle) / 2)
 
-    print("------------------")
-    print("3. squat_knee_angle")
-    print("LIMIT")
-    print(LIMIT)
-    print(angle)
     if angle >= LIMIT:
-        print("OK")
         return True
     else:
-        print("무릎이 발보다 더 나와있습니다.")
+        print("3: 무릎이 발보다 더 나와있습니다.")
         return False
 
 
@@ -107,6 +91,7 @@ def squat_count(keypoint):
 
 def postureCorrection(keypoint):
     if(squat_down(keypoint) and squat_straight(keypoint) and squat_knee_angle(keypoint)):
+        print("스쿼트 자세를 잘 잡으셨어요!")
         return True
     else:
         return False
