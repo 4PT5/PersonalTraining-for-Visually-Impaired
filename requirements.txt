@@ -9,7 +9,7 @@ django-cors-headers
 tensorflow==1.15.5
 numpy
 scipy
-yaml
+pyyaml
 opencv-python
 
 # STT&TTS-------------------
