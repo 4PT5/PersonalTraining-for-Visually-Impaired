@@ -1,7 +1,37 @@
 import math
 import imageDetect
+import threading
+import pyttsx3
+import queue
 
 CNT = 0
+
+
+class TTSThread(threading.Thread):
+    def __init__(self, queue):
+        threading.Thread.__init__(self)
+        self.queue = queue
+        self.daemon = True
+        self.start()
+
+    def run(self):
+        tts_engine = pyttsx3.init()
+        tts_engine.startLoop(False)
+        t_running = True
+        while t_running:
+            if self.queue.empty():
+                tts_engine.iterate()
+            else:
+                data = self.queue.get()
+                if data == "exit":
+                    t_running = False
+                else:
+                    tts_engine.say(data)
+        tts_engine.endLoop()
+
+
+q = queue.Queue()
+tts_thread = TTSThread(q)
 
 
 def getDegree(key1, key2, key3):
@@ -32,10 +62,12 @@ def squat_down(keypoint):
     if(d_LIMIT - value <= hip_knee <= d_LIMIT + value):
         return True
     elif(hip_knee > d_LIMIT + value):
-        print("1: 조금 일어나세요.")
+        q.queue.clear()
+        q.put("1: 조금 일어나세요.")
         return False
     elif(-100 < hip_knee < d_LIMIT - value):
-        print("1: 조금 더 앉으세요")
+        q.queue.clear()
+        q.put("1: 조금 더 앉으세요")
         return False
     else:
         return False
@@ -50,11 +82,13 @@ def squat_straight(keypoint):
         return True
 
     elif angle < s_LIMIT-value:
-        print("2: 조금 더 허리를 세워주세요.")
+        q.queue.clear()
+        q.put("2: 조금 더 허리를 세워주세요.")
         return False
 
     elif angle > s_LIMIT+value:
-        print("2: 조금 더 허리를 구부려주세요.")
+        q.queue.clear()
+        q.put("2: 조금 더 허리를 구부려주세요.")
         return False
 
 
@@ -68,7 +102,8 @@ def squat_knee_angle(keypoint):
     if angle >= LIMIT:
         return True
     else:
-        print("3: 무릎이 발보다 더 나와있습니다.")
+        q.queue.clear()
+        q.put("무릎이 발보다 더 나와있습니다.")
         return False
 
 
@@ -91,7 +126,7 @@ def squat_count(keypoint):
 
 def postureCorrection(keypoint):
     if(squat_down(keypoint) and squat_straight(keypoint) and squat_knee_angle(keypoint)):
-        print("스쿼트 자세를 잘 잡으셨어요!")
+        q.put("스쿼트 자세를 잘 잡으셨어요!")
         return True
     else:
         return False
@@ -101,7 +136,8 @@ def counting(keypoint):
     if squat_count(keypoint):
         global CNT
         CNT += 1
-        print("성공한 횟수 : " + str(CNT))
+        q.queue.clear()
+        q.put("성공한 횟수 " + str(CNT))
         return True
     else:
         return False
