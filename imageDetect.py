@@ -42,7 +42,7 @@ def main(exerciseCode):
         filenames = [
             f.path for f in os.scandir(args['image_dir']) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
-        exercise = {1: 'squat', 2: 'lunge'}
+        exercise = {1: 'squat', 2: 'press_up', 3: 'press_down'}
         f = './images\\' + exercise[exerciseCode] + '.jpg'
         start = time.time()
 
