@@ -11,7 +11,7 @@ def selectExercise():
         return 1
     elif(exercise == 2):
         tts.q.queue.clear()
-        tts.q.put("런지 운동을 시작합니다.")
+        tts.q.put("숄더프레스 운동을 시작합니다.")
         return 2
     elif(exercise == 3):
         tts.q.queue.clear()

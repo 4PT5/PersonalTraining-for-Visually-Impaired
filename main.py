@@ -6,6 +6,7 @@ import numpy as np
 
 import time
 import squat
+import shoulderPress
 import ready
 from speechRecognition import tts
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
@@ -106,23 +107,33 @@ def main():
 
             if(cnt == 1):
                 tts.q.put("10초 후에 시작합니다. 자리를 잡아주세요.")
-
+                shoulderPress.setting(exerciseCode)
             if (cnt % cycle == 0):
                 if(init):
                     if(cnt > 30 and ready.isReady(keypoint_coords[0])):
                         init = False
                         init2 = True
                 elif(init2):
-                    if(ready.isSide(keypoint_coords[0])):
+                    if exerciseCode == 1 and ready.isSide(keypoint_coords[0]):
                         init2 = False
                         init3 = True
-                        if exerciseCode == 1:
-                            squat.setting(exerciseCode)
-                            tts.q.put("스쿼트란,,,,,, 설명")
-                            tts.q.put("자세를 잡아주세요")
+                        squat.setting(exerciseCode)
+                        tts.q.put("스쿼트란,,,,,, 설명")
+                        tts.q.put("자세를 잡아주세요")
+                    elif exerciseCode == 2:
+                        init2 = False
+                        init3 = True
+                        shoulderPress.setting(exerciseCode)
+                        tts.q.put("숄더프레스란,,,,,, 설명")
+                        tts.q.put("자세를 잡아주세요")
                 elif(init3):
                     if exerciseCode == 1:
                         if(squat.postureCorrection(keypoint_coords[0])):
+                            tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
+                            cnt = 2
+                            init3 = False
+                    elif exerciseCode == 2:
+                        if(shoulderPress.postureCorrection(keypoint_coords[0])):
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False
@@ -132,6 +143,13 @@ def main():
                             tts.q.put("시작해주세요.")
                         elif(cnt > 30 and squat.counting(keypoint_coords[0])):
                             if squat.CNT == 5:
+                                tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
+                                break
+                    elif exerciseCode == 2:
+                        if(cnt == 30):
+                            tts.q.put("시작해주세요.")
+                        elif(cnt > 30 and shoulderPress.counting(keypoint_coords[0])):
+                            if shoulderPress.CNT == 5:
                                 tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
 

@@ -27,6 +27,13 @@ def setting(exCode):
     # ㄴ : 손목 - 팔꿈치 - 척추상
     down_left_LIMIT2 = getDegree(down_arr[9], down_arr[7], down_arr[17])
     down_right_LIMIT2 = getDegree(down_arr[10], down_arr[8], down_arr[17])
+
+    print(up_left_LIMIT)
+    print(up_right_LIMIT)
+    print(down_left_LIMIT1)
+    print(down_right_LIMIT1)
+    print(down_left_LIMIT2)
+    print(down_right_LIMIT2)
     cnt_flag = True
 
 
