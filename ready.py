@@ -3,7 +3,7 @@ from speechRecognition import tts
 
 def selectExercise():
     tts.q.queue.clear()
-    tts.q.put("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 런지, 3: 숨쉬기)")
+    tts.q.put("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 숄더프레스, 3: 레터럴레이즈)")
     exercise = int(input())
     if(exercise == 1):
         tts.q.queue.clear()

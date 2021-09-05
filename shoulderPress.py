@@ -15,7 +15,7 @@ def setting(exCode):
     global up_left_LIMIT, up_right_LIMIT, cnt_flag
     global down_left_LIMIT1, down_right_LIMIT1, down_left_LIMIT2, down_right_LIMIT2
     up_arr = imageDetect.main(exCode)
-    down_arr = imageDetect.main(exCode+1)
+    down_arr = imageDetect.main(exCode+0.5)
 
     # 어께 - 팔꿈치 - 손목
     up_left_LIMIT = getDegree(up_arr[5], up_arr[7], up_arr[9])
@@ -28,12 +28,6 @@ def setting(exCode):
     down_left_LIMIT2 = getDegree(down_arr[9], down_arr[7], down_arr[17])
     down_right_LIMIT2 = getDegree(down_arr[10], down_arr[8], down_arr[17])
 
-    print(up_left_LIMIT)
-    print(up_right_LIMIT)
-    print(down_left_LIMIT1)
-    print(down_right_LIMIT1)
-    print(down_left_LIMIT2)
-    print(down_right_LIMIT2)
     cnt_flag = True
 
 

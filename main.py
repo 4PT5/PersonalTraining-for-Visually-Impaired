@@ -107,7 +107,6 @@ def main():
 
             if(cnt == 1):
                 tts.q.put("10초 후에 시작합니다. 자리를 잡아주세요.")
-                shoulderPress.setting(exerciseCode)
             if (cnt % cycle == 0):
                 if(init):
                     if(cnt > 30 and ready.isReady(keypoint_coords[0])):

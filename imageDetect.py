@@ -18,6 +18,7 @@ import posenet
 args = {"model": 101, "scale_factor": 1.0, "notxt": True, "image_dir": './images',
         "output_dir": './output'}
 
+
 def getAverage(pos, n):
     x, y = 0, 0
 
@@ -42,7 +43,8 @@ def main(exerciseCode):
         filenames = [
             f.path for f in os.scandir(args['image_dir']) if f.is_file() and f.path.endswith(('.png', '.jpg'))]
 
-        exercise = {1: 'squat', 2: 'press_up', 3: 'press_down'}
+        exercise = {1: 'squat', 2: 'press_up',
+                    2.5: 'press_down', 3: 'raise_up', 3.5: 'raise_down'}
         f = './images\\' + exercise[exerciseCode] + '.jpg'
         start = time.time()
 
