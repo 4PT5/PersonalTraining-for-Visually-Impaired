@@ -28,7 +28,6 @@ def squat_down(keypoint):
     hip_knee_r = keypoint[12][0]-keypoint[14][0]
     hip_knee = (hip_knee_l+hip_knee_r)/2
     value = 30
-    isStand = d_LIMIT - value > hip_knee or hip_knee > d_LIMIT + value
 
     if(d_LIMIT - value <= hip_knee <= d_LIMIT + value):
         return True

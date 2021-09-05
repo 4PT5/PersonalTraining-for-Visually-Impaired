@@ -1,7 +1,6 @@
 import posenet
 import tensorflow as tf
 import cv2
-import argparse
 import numpy as np
 
 import time
@@ -49,13 +48,13 @@ def main():
         output_stride = model_cfg['output_stride']
         # 내장 캠 : 0 , 외장 캠 : 1
         cap = cv2.VideoCapture(0)
-        cap.set(3, 640)
-        cap.set(4, 360)
+        cap.set(3, 1280)
+        cap.set(4, 720)
 
         start = time.time()
         frame_count = 0
         cnt = 0
-        cycle = 2
+        cycle = 4
         init = True
         init2 = False
         init3 = False
@@ -113,6 +112,7 @@ def main():
                     #if(cnt > 30 and ready.isReady(keypoint_coords[0])):
                         init = False
                         init2 = True
+                        init3 = True
                 elif(init2):
                     if exerciseCode == 1 and ready.isSide(keypoint_coords[0]):
                         init2 = False
@@ -121,17 +121,21 @@ def main():
                         tts.q.put("스쿼트란,,,,,, 설명")
                         tts.q.put("자세를 잡아주세요")
                     elif exerciseCode == 2:
-                        init2 = False
-                        init3 = True
-                        shoulderPress.setting(exerciseCode)
-                        tts.q.put("숄더프레스란,,,,,, 설명")
-                        tts.q.put("자세를 잡아주세요")
+                        if init3:
+                            shoulderPress.setting(exerciseCode)
+                            tts.q.put("숄더프레스란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요")
+                            init3 = False
+                        if (shoulderPress.isDown(keypoint_coords[0])):
+                            init2 = False
+                            init3 = True
+                            tts.q.queue.clear()
+                            tts.q.put("숄더프레스를 1회 해주세요.")
                     elif exerciseCode == 3:
                         init2 = False
                         init3 = True
                         leteralRaise.setting(exerciseCode)
                         tts.q.put("리터럴 레이즈란,,,,,, 설명")
-                        tts.q.put("자세를 잡아주세요")   
+                        tts.q.put("자세를 잡아주세요")
                 elif(init3):
                     if exerciseCode == 1:
                         if(squat.postureCorrection(keypoint_coords[0])):
