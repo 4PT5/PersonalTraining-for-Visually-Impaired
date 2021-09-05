@@ -6,6 +6,7 @@ import numpy as np
 import time
 import squat
 import shoulderPress
+import leteralRaise
 import ready
 from speechRecognition import tts
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
@@ -108,7 +109,7 @@ def main():
                 tts.q.put("10초 후에 시작합니다. 자리를 잡아주세요.")
             if (cnt % cycle == 0):
                 if(init):
-                    if(cnt > 30 and ready.isReady(keypoint_coords[0])):
+                    #if(cnt > 30 and ready.isReady(keypoint_coords[0])):
                         init = False
                         init2 = True
                         init3 = True
@@ -129,6 +130,12 @@ def main():
                             init3 = True
                             tts.q.queue.clear()
                             tts.q.put("숄더프레스를 1회 해주세요.")
+                    elif exerciseCode == 3:
+                        init2 = False
+                        init3 = True
+                        leteralRaise.setting(exerciseCode)
+                        tts.q.put("리터럴 레이즈란,,,,,, 설명")
+                        tts.q.put("자세를 잡아주세요")
                 elif(init3):
                     if exerciseCode == 1:
                         if(squat.postureCorrection(keypoint_coords[0])):
@@ -140,6 +147,11 @@ def main():
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False
+                    elif exerciseCode == 3:
+                        if(leteralRaise.postureCorrection(keypoint_coords[0])):
+                            tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
+                            cnt = 2
+                            init3 = False        
                 else:
                     if exerciseCode == 1:
                         if(cnt == 30):
@@ -153,7 +165,14 @@ def main():
                             tts.q.put("시작해주세요.")
                         elif(cnt > 30 and shoulderPress.counting(keypoint_coords[0])):
                             if shoulderPress.CNT == 5:
-                                tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
+                                tts.q.put("숄더프레스 5회를 마쳤습니다. 수고하셨습니다.")
+                                break
+                    elif exerciseCode == 3:
+                        if(cnt == 30):
+                            tts.q.put("시작해주세요.")
+                        elif(cnt > 30 and leteralRaise.counting(keypoint_coords[0])):
+                            if leteralRaise.CNT == 5:
+                                tts.q.put("레터럴레이즈 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
 
             # TODO this isn't particularly fast, use GL for drawing and display someday...
