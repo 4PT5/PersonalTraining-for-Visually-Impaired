@@ -11,22 +11,12 @@ import ready
 from speechRecognition import tts
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('--model', type=int, default=101)
-# parser.add_argument('--cam_id', type=int, default=0)
-# parser.add_argument('--cam_width', type=int, default=1280)
-# parser.add_argument('--cam_height', type=int, default=720)
-# parser.add_argument('--scale_factor', type=float, default=0.7125)
-# parser.add_argument('--file', type=str, default=None,
-#                     help="Optionally use a video file instead of a live camera")
-# args = parser.parse_args()
-
 args = {"model": 101, "scale_factor": 1.0, "notxt": True, "image_dir": './images',
         "output_dir": './output'}
 position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "왼쪽어깨", "오른쪽어깨", "왼쪽팔꿈치", "오른쪽팔꿈치",
             "왼쪽손목", "오른쪽손목", "왼쪽골반부위", "오른쪽골반부위", "왼쪽무릎", "오른쪽무릎", "왼쪽발목", "오른쪽발목"]
 
-# 철추상 : Spine At The Shoulder , 척추중 : Middle Of The Spine , 척추하 : Base Of Spine
+# 척추상 : Spine At The Shoulder , 척추중 : Middle Of The Spine , 척추하 : Base Of Spine
 spine_position = ["척추상", "척추중", "척추하"]
 
 # spine position을 구하기 위해 평균 구하는 함수.
@@ -42,14 +32,19 @@ def getAverage(pos, n):
     return [x/n, y/n]
 
 
-def main():
-    with tf.Session() as sess:
+class VideoCamera(object):
+    def __init__(self):
+        self.cap = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.cap.release()
+
+
+def gen(camera):
+    with tf.compat.v1.Session() as sess:
         model_cfg, model_outputs = posenet.load_model(args['model'], sess)
         output_stride = model_cfg['output_stride']
         # 내장 캠 : 0 , 외장 캠 : 1
-        cap = cv2.VideoCapture(0)
-        cap.set(3, 1280)
-        cap.set(4, 720)
 
         start = time.time()
         frame_count = 0
@@ -64,7 +59,7 @@ def main():
         while True:
             cnt += 1
             input_image, display_image, output_scale = posenet.read_cap(
-                cap, scale_factor=args['scale_factor'], output_stride=output_stride)
+                camera.cap, scale_factor=args['scale_factor'], output_stride=output_stride)
 
             heatmaps_result, offsets_result, displacement_fwd_result, displacement_bwd_result = sess.run(
                 model_outputs,
@@ -181,14 +176,14 @@ def main():
                 min_pose_score=0.15, min_part_score=0.1)
 
             overlay_image = cv2.resize(overlay_image, dsize=(
-                640, 360), interpolation=cv2.INTER_AREA)
-            cv2.imshow('posenet', overlay_image)
+                1240, 920), interpolation=cv2.INTER_AREA)
+
             frame_count += 1
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
 
-        print('Average FPS: ', frame_count / (time.time() - start))
+            ret, jpeg = cv2.imencode('.jpg', overlay_image)
+            frame = jpeg.tobytes()
 
+            yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
-if __name__ == "__main__":
-    main()
+        # print('Average FPS: ', frame_count / (time.time() - start))
