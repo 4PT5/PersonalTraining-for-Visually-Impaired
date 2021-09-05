@@ -13,7 +13,7 @@ def getDegree(key1, key2, key3):
 
 def setting(exCode):
     global up_left_LIMIT, up_right_LIMIT, cnt_flag
-    global down_left_LIMIT1, down_right_LIMIT1, down_left_LIMIT2, down_right_LIMIT2
+    global up_left_slope_LIMIT, up_right_slope_LIMIT, down_left_slope_LIMIT, down_right_slope_LIMIT
     up_arr = imageDetect.main(exCode)
     down_arr = imageDetect.main(exCode+0.5)
 
@@ -22,14 +22,14 @@ def setting(exCode):
     up_right_LIMIT = getDegree(up_arr[6], up_arr[8], up_arr[10])
 
     # 손목 - 어깨 기울기
-    up_left_slope_LIMIT = up_arr[9][0]-up_arr[5][0] / up_arr[9][1]-up_arr[5][1]
-    up_right_slope_LIMIT = up_arr[10][0]-up_arr[6][0] / up_arr[10][1]-up_arr[6][1]
+    up_left_slope_LIMIT = abs((up_arr[5][0]-up_arr[9][0]) / (up_arr[5][1]-up_arr[9][1]))
+    up_right_slope_LIMIT = abs((up_arr[6][0]-up_arr[10][0]) / (up_arr[6][1]-up_arr[10][1]))
     
     print("왼 손목-어깨 기울기: ", up_left_slope_LIMIT)
     print("오 손목-어깨 기울기: ", up_right_slope_LIMIT)
 
-    down_left_slope_LIMIT = down_arr[9][0]-down_arr[5][0] / down_arr[9][1]-down_arr[5][1]
-    down_right_slope_LIMIT = down_arr[10][0]-down_arr[6][0] / down_arr[10][1]-down_arr[6][1]
+    down_left_slope_LIMIT = abs((down_arr[9][0]-down_arr[5][0]) / (down_arr[9][1]-down_arr[5][1]))
+    down_right_slope_LIMIT = abs((down_arr[10][0]-down_arr[6][0]) / (down_arr[10][1]-down_arr[6][1]))
     
     print("왼 손목-어깨 기울기: ", down_left_slope_LIMIT)
     print("오 손목-어깨 기울기: ", down_right_slope_LIMIT)
@@ -40,6 +40,10 @@ def setting(exCode):
 def raiseDown(keypoint):
     # keypoint[5] : 왼쪽 어깨, keypoint[7] : 왼쪽 팔꿈치, keypoint[9] : 왼쪽 손목
     # keypoint[6] : 오른쪽 어깨, keypoint[8] : 오른쪽 팔꿈치, keypoint[10] : 오른쪽 손목
+    left_slope = abs((keypoint[5][0]-keypoint[9][0]) / (keypoint[5][1]-keypoint[9][1]))
+    right_slope = abs((keypoint[6][0]-keypoint[10][0]) / (keypoint[6][1]-keypoint[10][1]))
+    print("down 왼 기울기: ", left_slope)
+    print("down dh 기울기: ", right_slope)
 
     value = 20
 
@@ -47,11 +51,17 @@ def raiseDown(keypoint):
 def raiseUp(keypoint):
     # keypoint[5] : 왼쪽 어깨, keypoint[7] : 왼쪽 팔꿈치, keypoint[9] : 왼쪽 손목
     # keypoint[6] : 오른쪽 어깨, keypoint[8] : 오른쪽 팔꿈치, keypoint[10] : 오른쪽 손목
-
+    left_angle = getDegree(keypoint[5], keypoint[7], keypoint[9])
+    right_angle = getDegree(keypoint[6], keypoint[8], keypoint[10])
+    left_slope = abs((keypoint[9][0]-keypoint[5][0]) / (keypoint[9][1]-keypoint[5][1]))
+    right_slope = abs((keypoint[10][0]-keypoint[6][0]) / (keypoint[10][1]-keypoint[6][1]))
+    print("up 왼 기울기: ", left_slope)
+    print("up 오 기울기: ", right_slope)
     value = 20
 
 
 def postureCorrection(keypoint):
+    print("=========================")
     if(raiseDown(keypoint) and raiseUp(keypoint)):
         tts.q.put("레터럴 레이즈 자세를 잘 잡으셨어요!")
         return True
