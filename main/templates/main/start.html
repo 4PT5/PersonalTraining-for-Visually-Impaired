@@ -9,25 +9,24 @@
     .container { text-align: center; }
     .Footer { position: fixed; left: 0px; bottom: 0px; width: 100%; }
     .btn {
-        width: 150px;
-        height: 50px;
-        margin-left: 940px; 
-        margin-top: 20px;
+        width: 500px;
+        height: 150px;
+        margin-top: 140px;
         background: #00739d;
         color: #ffffff;
         border: none;
         position: relative;
-        font-size: 1.2em;
+        font-size: 2.6em;
         padding: 0 2em;
         cursor: pointer;
         transition: 800ms ease all;
         outline: none;
       }
       .btn:hover {
-        background: #004E6a;
-        color: #ffffff;
+        background: #ffffff;
+        color: #00739d;
       }
-      /* .btn:before,
+      .btn:before,
       .btn:after {
         content: "";
         position: absolute;
@@ -48,17 +47,17 @@
       .btn:hover:after {
         width: 100%;
         transition: 800ms ease all;
-      } */
+      }
+
   </style>
 </head>
 
 <body>
   <nav>
     <img src="https://i.esdrop.com/d/j09wmqn009xs/fRGaFyj08q.png" style="margin-left:150px; margin-top:20px;">
-    <button type="button" class="btn" onClick="location.href='http://127.0.0.1:8000'">QUIT</button>
   </nav>
   <div class="container">
-    <img src="http://127.0.0.1:8000/camera" style="width:650px;" />
+    <button class="btn" onClick="location.href='http://127.0.0.1:8000/training'">START</button>
   </div>
   <!-- Footer -->
   <div class="hi"></div>
