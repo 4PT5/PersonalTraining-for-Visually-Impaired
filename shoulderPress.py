@@ -139,6 +139,7 @@ def isDown(keypoint):
 
 def postureCorrection(keypoint):
     if(pressUp(keypoint)):
+        tts.q.queue.clear()
         tts.q.put("숄드 프레스 자세를 잘 잡으셨어요!")
         return True
     else:
@@ -148,7 +149,7 @@ def postureCorrection(keypoint):
 def shoulderPress_count(keypoint):
     left_angle = getDegree(keypoint[5], keypoint[7], keypoint[9])
     right_angle = getDegree(keypoint[6], keypoint[8], keypoint[10])
-    value = 50
+    value = 40
     global cnt_flag
     l_flag = False
     r_flag = False

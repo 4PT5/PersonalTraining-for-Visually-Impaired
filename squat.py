@@ -27,7 +27,10 @@ def squat_down(keypoint):
     hip_knee_l = keypoint[11][0]-keypoint[13][0]
     hip_knee_r = keypoint[12][0]-keypoint[14][0]
     hip_knee = (hip_knee_l+hip_knee_r)/2
-    value = 30
+    value = 15
+
+    if hip_knee < -65:
+        return False 
 
     if(d_LIMIT - value <= hip_knee <= d_LIMIT + value):
         return True
@@ -35,17 +38,15 @@ def squat_down(keypoint):
         tts.q.queue.clear()
         tts.q.put("1: 조금 일어나세요.")
         return False
-    elif(-100 < hip_knee < d_LIMIT - value):
+    elif(hip_knee < d_LIMIT - value):
         tts.q.queue.clear()
         tts.q.put("1: 조금 더 앉으세요")
-        return False
-    else:
         return False
 
 
 def squat_straight(keypoint):
     # keypoint[17] : 척수상, keypoint[18] : 척수중, keypoint[19] : 척추하
-    value = 10
+    value = 5
     angle = getDegree(keypoint[17], keypoint[18], keypoint[19])
 
     if s_LIMIT-value <= angle <= s_LIMIT+value:

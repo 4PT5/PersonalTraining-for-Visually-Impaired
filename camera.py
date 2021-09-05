@@ -7,7 +7,7 @@ import time
 import squat
 import shoulderPress
 import leteralRaise
-import ready
+import ready 
 from speechRecognition import tts
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
@@ -34,7 +34,7 @@ def getAverage(pos, n):
 
 class VideoCamera(object):
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
 
     def __del__(self):
         self.cap.release()
@@ -54,7 +54,7 @@ def gen(camera):
         init2 = False
         init3 = False
 
-        exerciseCode = ready.selectExercise()
+        exerciseCode = ready.exerciseCode
 
         while True:
             cnt += 1
@@ -104,7 +104,7 @@ def gen(camera):
                 tts.q.put("10초 후에 시작합니다. 자리를 잡아주세요.")
             if (cnt % cycle == 0):
                 if(init):
-                    #if(cnt > 30 and ready.isReady(keypoint_coords[0])):
+                    if(cnt > 30 and ready.isReady(keypoint_coords[0])):
                         init = False
                         init2 = True
                         init3 = True
@@ -113,12 +113,11 @@ def gen(camera):
                         init2 = False
                         init3 = True
                         squat.setting(exerciseCode)
-                        tts.q.put("스쿼트란,,,,,, 설명")
-                        tts.q.put("자세를 잡아주세요")
+                        tts.q.put("스쿼트란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요.")
                     elif exerciseCode == 2:
                         if init3:
                             shoulderPress.setting(exerciseCode)
-                            tts.q.put("숄더프레스란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요")
+                            tts.q.put("숄더프레스란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요.")
                             init3 = False
                         if (shoulderPress.isDown(keypoint_coords[0])):
                             init2 = False
@@ -129,21 +128,23 @@ def gen(camera):
                         init2 = False
                         init3 = True
                         leteralRaise.setting(exerciseCode)
-                        tts.q.put("리터럴 레이즈란,,,,,, 설명")
-                        tts.q.put("자세를 잡아주세요")
+                        tts.q.put("리터럴 레이즈란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요.")
                 elif(init3):
                     if exerciseCode == 1:
                         if(squat.postureCorrection(keypoint_coords[0])):
+                            tts.q.queue.clear()
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False
                     elif exerciseCode == 2:
                         if(shoulderPress.postureCorrection(keypoint_coords[0])):
+                            tts.q.queue.clear()
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False
                     elif exerciseCode == 3:
                         if(leteralRaise.postureCorrection(keypoint_coords[0])):
+                            tts.q.queue.clear()
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False        

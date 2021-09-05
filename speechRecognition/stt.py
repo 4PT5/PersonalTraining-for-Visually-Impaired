@@ -14,23 +14,18 @@ def sttFunction():
         # 구글 웹 음성 API로 인식하기 (하루에 제한 50회)
         try:
             result = r.recognize_google(audio, language='ko')
-            #print("Google Speech Recognition thinks you said : " + result)
         except sr.UnknownValueError:
-            #print("Google Speech Recognition could not understand audio")
             continue
         except sr.RequestError as e:
-            #print("Could not request results from Google Speech Recognition service; {0}".format(e))
             continue
+        print(result)
 
         # 결과
-        if result == '일번' or result == '1번':
-            #print('1번 페이지로 이동합니다.')
+        if '일번' in result or '1번' in result:
             return 1
-        elif result == '이번' or result == '2번':
-            #print('2번 페이지로 이동합니다.')
+        elif '이번' in result or '2번' in result:
             return 2
-        elif result == '삼번' or result == '3번':
-            #print('3번 페이지로 이동합니다.')
+        elif '삼번' in result or '3번' in result:
             return 3
         else:
             print('다시 말하세요.')

@@ -1,30 +1,33 @@
 from speechRecognition import tts
 from speechRecognition import stt
 
-
 def selectExercise():
     tts.q.queue.clear()
     tts.q.put("어떤 운동을 진행하시겠습니까? (1: 스쿼트, 2: 숄더프레스, 3: 레터럴레이즈)")
     exercise = int(stt.sttFunction())
+
+    global exerciseCode
+    exerciseCode = 0
+    
     if(exercise == 1):
         tts.q.queue.clear()
         tts.q.put("스쿼트 운동을 시작합니다.")
-        return 1
+        exerciseCode = 1
     elif(exercise == 2):
         tts.q.queue.clear()
         tts.q.put("숄더프레스 운동을 시작합니다.")
-        return 2
+        exerciseCode = 2
     elif(exercise == 3):
         tts.q.queue.clear()
         tts.q.put("레터럴 레이즈 운동을 시작합니다.")
-        return 3
+        exerciseCode = 3
 
 
 def isReady(keypoint):
     # keypoint[15][0]: 왼쪽 발목 y좌표, keypoint[1][0]: 왼쪽 눈 y좌표
     height = keypoint[15][0]-keypoint[1][0]
-    MAX_LIMIT = 550
-    MIN_LIMIT = 450
+    MAX_LIMIT = 320
+    MIN_LIMIT = 250
 
     if MIN_LIMIT <= height <= MAX_LIMIT:
         tts.q.queue.clear()
