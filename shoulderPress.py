@@ -20,7 +20,6 @@ def setting(exCode):
     # 어께 - 팔꿈치 - 손목
     up_left_LIMIT = getDegree(up_arr[5], up_arr[7], up_arr[9])
     up_right_LIMIT = getDegree(up_arr[6], up_arr[8], up_arr[10])
-
     # ㄱ : 팔꿈치 - 척추상 - 척추중
     down_left_LIMIT1 = getDegree(down_arr[7], down_arr[17], down_arr[18])
     down_right_LIMIT1 = getDegree(down_arr[8], down_arr[17], down_arr[18])
@@ -40,21 +39,22 @@ def pressDown1(keypoint):
     right_angle_1 = getDegree(keypoint[8], keypoint[17], keypoint[18])
     value = 16
 
-    if(keypoint[9][0] > keypoint[18][0]):
+    # 가만히 서있는지 확인.
+    if keypoint[9][0] > keypoint[18][0]:
         return False
 
-    if(down_left_LIMIT1 - value <= left_angle_1 <= down_left_LIMIT1 + value):
+    if down_left_LIMIT1 - value <= left_angle_1 <= down_left_LIMIT1 + value:
         flag_l = True
     else:
         tts.q.queue.clear()
-        tts.q.put("1: 왼쪽 팔을 직각으로 해주세요.")
+        tts.q.put("왼쪽 팔을 직각으로 들어주세요.")
         flag_l = False
 
-    if(down_right_LIMIT1 - value <= right_angle_1 <= down_right_LIMIT1 + value):
+    if down_right_LIMIT1 - value <= right_angle_1 <= down_right_LIMIT1 + value:
         flag_r = True
     else:
         tts.q.queue.clear()
-        tts.q.put("1: 오른쪽 팔을 직각으로 해주세요.")
+        tts.q.put("오른쪽 팔을 직각으로 들어주세요.")
         flag_r = False
 
     if flag_l and flag_r:
@@ -71,28 +71,28 @@ def pressDown2(keypoint):
     left_angle_2 = getDegree(keypoint[9], keypoint[7], keypoint[17])
     right_angle_2 = getDegree(keypoint[10], keypoint[8], keypoint[17])
 
-    if(down_right_LIMIT2 <= left_angle_2 <= down_left_LIMIT2):
+    if down_right_LIMIT2 <= left_angle_2 <= down_left_LIMIT2:
         flag_l = True
-    elif(left_angle_2 > down_left_LIMIT2):
+    elif left_angle_2 > down_left_LIMIT2:
         tts.q.queue.clear()
-        tts.q.put("2: 왼쪽 팔을 조금 더 접어주세요.")
+        tts.q.put("왼쪽 팔을 안쪽으로 더 접어주세요.")
         flag_l = False
-    elif(left_angle_2 < down_right_LIMIT2):
+    elif left_angle_2 < down_right_LIMIT2:
         tts.q.queue.clear()
-        tts.q.put("2: 왼쪽 팔을 조금 더 펴주세요.")
+        tts.q.put("왼쪽 팔을 바깥쪽으로 더 펴주세요.")
         flag_l = False
     else:
         flag_l = False
 
-    if(down_right_LIMIT2 <= right_angle_2 <= down_left_LIMIT2):
+    if down_right_LIMIT2 <= right_angle_2 <= down_left_LIMIT2:
         flag_r = True
-    elif(right_angle_2 > down_left_LIMIT2):
+    elif right_angle_2 > down_left_LIMIT2:
         tts.q.queue.clear()
-        tts.q.put("2: 오른쪽 팔을 조금 더 접어주세요.")
+        tts.q.put("오른쪽 팔을 안쪽으로 더 접어주세요.")
         flag_r = False
-    elif(right_angle_2 < down_right_LIMIT2):
+    elif right_angle_2 < down_right_LIMIT2:
         tts.q.queue.clear()
-        tts.q.put("2: 오른쪽 팔을 조금 더 펴세요.")
+        tts.q.put("오른쪽 팔을 바깥쪽으로 더 펴세요.")
         flag_r = False
     else:
         flag_r = False
@@ -107,6 +107,7 @@ def pressUp(keypoint):
     # keypoint[5] : 왼쪽어깨, keypoint[7] : 왼쪽팔꿈치, keypoint[9] : 왼쪽손목
     # keypoint[6] : 오른쪽어깨, keypoint[8] : 오른쪽팔꿈치, keypoint[10] : 오른쪽손목
 
+    # 어께 - 팔꿈치 - 손목
     left_angle = getDegree(keypoint[5], keypoint[7], keypoint[9])
     right_angle = getDegree(keypoint[6], keypoint[8], keypoint[10])
     value = 25
@@ -118,13 +119,13 @@ def pressUp(keypoint):
         l_flag = True
     else:
         tts.q.queue.clear()
-        tts.q.put("왼쪽 팔꿈치를 좀더 올려주세요!")
+        tts.q.put("왼쪽 팔꿈치를 좀 더 올려주세요!")
 
     if up_right_LIMIT - value < right_angle:
         r_flag = True
     else:
         tts.q.queue.clear()
-        tts.q.put("오른쪽 팔꿈치를 좀더 올려주세요!")
+        tts.q.put("오른쪽 팔꿈치를 좀 더 올려주세요!")
 
     if l_flag and r_flag:
         return True
@@ -138,7 +139,7 @@ def isDown(keypoint):
 
 
 def postureCorrection(keypoint):
-    if(pressUp(keypoint)):
+    if pressUp(keypoint):
         tts.q.queue.clear()
         tts.q.put("숄드 프레스 자세를 잘 잡으셨어요!")
         return True
@@ -147,19 +148,22 @@ def postureCorrection(keypoint):
 
 
 def shoulderPress_count(keypoint):
+    # 어께 - 팔꿈치 - 손목
     left_angle = getDegree(keypoint[5], keypoint[7], keypoint[9])
     right_angle = getDegree(keypoint[6], keypoint[8], keypoint[10])
     value = 40
     global cnt_flag
+
     l_flag = False
     r_flag = False
+
     if up_left_LIMIT - value < left_angle:
         l_flag = True
 
     if up_right_LIMIT - value < right_angle:
         r_flag = True
 
-    if(l_flag and r_flag):
+    if l_flag and r_flag:
         cnt_flag = False
         return True
     else:

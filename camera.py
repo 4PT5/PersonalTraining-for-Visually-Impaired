@@ -7,7 +7,7 @@ import time
 import squat
 import shoulderPress
 import leteralRaise
-import ready 
+import ready
 from speechRecognition import tts
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
@@ -18,8 +18,6 @@ position = ["코", "왼쪽눈", "오른쪽눈", "왼쪽귀", "오른쪽귀", "�
 
 # 척추상 : Spine At The Shoulder , 척추중 : Middle Of The Spine , 척추하 : Base Of Spine
 spine_position = ["척추상", "척추중", "척추하"]
-
-# spine position을 구하기 위해 평균 구하는 함수.
 
 
 def getAverage(pos, n):
@@ -44,7 +42,6 @@ def gen(camera):
     with tf.compat.v1.Session() as sess:
         model_cfg, model_outputs = posenet.load_model(args['model'], sess)
         output_stride = model_cfg['output_stride']
-        # 내장 캠 : 0 , 외장 캠 : 1
 
         start = time.time()
         frame_count = 0
@@ -100,26 +97,30 @@ def gen(camera):
             keypoint_coords *= output_scale
             position.extend(spine_position)
 
-            if(cnt == 1):
+            if cnt == 1:
                 tts.q.put("10초 후에 시작합니다. 자리를 잡아주세요.")
-            if (cnt % cycle == 0):
-                if(init):
-                    if(cnt > 30 and ready.isReady(keypoint_coords[0])):
+
+            if cnt % cycle == 0:
+                if init:
+                    if cnt > 30 and ready.isReady(keypoint_coords[0]):
                         init = False
                         init2 = True
                         init3 = True
-                elif(init2):
+
+                elif init2:
                     if exerciseCode == 1 and ready.isSide(keypoint_coords[0]):
                         init2 = False
                         init3 = True
                         squat.setting(exerciseCode)
-                        tts.q.put("스쿼트란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요.")
+                        tts.q.put(
+                            "스쿼트는 대표적인 하체운동이며, 준비자세는 ~ 하는 방법 ~. 준비 자세를 잡아주세요.")
                     elif exerciseCode == 2:
                         if init3:
                             shoulderPress.setting(exerciseCode)
-                            tts.q.put("숄더프레스란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요.")
+                            tts.q.put(
+                                "숄더프레스는 대표적인 어깨운동이며, 준비자세는 ~ 하는 방법 ~. 준비 자세를 잡아주세요.")
                             init3 = False
-                        if (shoulderPress.isDown(keypoint_coords[0])):
+                        if shoulderPress.isDown(keypoint_coords[0]):
                             init2 = False
                             init3 = True
                             tts.q.queue.clear()
@@ -128,45 +129,48 @@ def gen(camera):
                         init2 = False
                         init3 = True
                         leteralRaise.setting(exerciseCode)
-                        tts.q.put("리터럴 레이즈란,,,,,, 설명,,,,,,, 준비 자세를 잡아주세요.")
-                elif(init3):
+                        tts.q.put(
+                            "리터럴 레이즈는 대표적인 어깨운동이며, 준비자세는 ~ 하는 방법 ~. 준비 자세를 잡아주세요.")
+
+                elif init3:
                     if exerciseCode == 1:
-                        if(squat.postureCorrection(keypoint_coords[0])):
+                        if squat.postureCorrection(keypoint_coords[0]):
                             tts.q.queue.clear()
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False
                     elif exerciseCode == 2:
-                        if(shoulderPress.postureCorrection(keypoint_coords[0])):
+                        if shoulderPress.postureCorrection(keypoint_coords[0]):
                             tts.q.queue.clear()
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
                             init3 = False
                     elif exerciseCode == 3:
-                        if(leteralRaise.postureCorrection(keypoint_coords[0])):
+                        if leteralRaise.postureCorrection(keypoint_coords[0]):
                             tts.q.queue.clear()
                             tts.q.put("10초 후 카운트를 시작합니다. 5회 반복해주세요.")
                             cnt = 2
-                            init3 = False        
+                            init3 = False
+
                 else:
                     if exerciseCode == 1:
-                        if(cnt == 30):
+                        if cnt == 30:
                             tts.q.put("시작해주세요.")
-                        elif(cnt > 30 and squat.counting(keypoint_coords[0])):
+                        elif cnt > 30 and squat.counting(keypoint_coords[0]):
                             if squat.CNT == 5:
                                 tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
                     elif exerciseCode == 2:
-                        if(cnt == 30):
+                        if cnt == 30:
                             tts.q.put("시작해주세요.")
-                        elif(cnt > 30 and shoulderPress.counting(keypoint_coords[0])):
+                        elif cnt > 30 and shoulderPress.counting(keypoint_coords[0]):
                             if shoulderPress.CNT == 5:
                                 tts.q.put("숄더프레스 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
                     elif exerciseCode == 3:
-                        if(cnt == 30):
+                        if cnt == 30:
                             tts.q.put("시작해주세요.")
-                        elif(cnt > 30 and leteralRaise.counting(keypoint_coords[0])):
+                        elif cnt > 30 and leteralRaise.counting(keypoint_coords[0]):
                             if leteralRaise.CNT == 5:
                                 tts.q.put("레터럴레이즈 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
@@ -185,6 +189,4 @@ def gen(camera):
             frame = jpeg.tobytes()
 
             yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-        # print('Average FPS: ', frame_count / (time.time() - start))
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
