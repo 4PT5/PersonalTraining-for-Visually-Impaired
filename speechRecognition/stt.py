@@ -1,7 +1,5 @@
 import speech_recognition as sr
 
-# microphone에서 auido source를 생성합니다
-
 
 def sttFunction():
     while True:

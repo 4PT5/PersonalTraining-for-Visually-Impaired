@@ -92,12 +92,6 @@ def main(exerciseCode):
             cv2.imwrite(os.path.join(args['output_dir'],
                         os.path.relpath(f, args['image_dir'])), draw_image)
 
-        # if not args.notxt':
-        #     for pi in range(len(pose_scores)):
-        #         if pose_scores[pi] == 0.:
-        #             break
-        #         for ki, (s, c) in enumerate(zip(keypoint_scores[pi, :], keypoint_coords[pi, :, :])):
-        #             keypointList.append(c)
         for pi in range(len(pose_scores)):
             if pose_scores[pi] == 0.:
                 break
