@@ -163,10 +163,10 @@ def shoulderPress_count(keypoint):
     if up_right_LIMIT - value < right_angle:
         r_flag = True
 
-    if l_flag and r_flag:
+    if cnt_flag and l_flag and r_flag:
         cnt_flag = False
         return True
-    else:
+    elif not (l_flag and r_flag):
         cnt_flag = True
         return False
 
