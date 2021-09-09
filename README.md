@@ -40,7 +40,7 @@ tensorflow==1.15.5
 ```
 
 ## System Architecture
-<img src="https://i.esdrop.com/d/j09wmqn009xs/xB1TF4AXSQ.png" width="80%" height="60%">
+<img src="https://i.esdrop.com/d/j09wmqn009xs/TZtVCFOK9u.png" width="80%" height="60%">
 
 ## Introduction
 ### Project purpose
@@ -99,9 +99,9 @@ The system runs on web.
 *Image Processing:* openCV 3.4.13, tensorflow-posenet 1.15.5 
 
 ## Browser Support
-![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png) |
---- | --- | --- |
-Latest ✔ | Latest ✔ | 10+ ✔ |
+![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png) |
+--- | --- |
+Latest ✔| 10+ ✔ |
 
 ## Contributors
 All participants in this project are majoring in Computer Science Engieneering, Dongguk University🏫
@@ -115,13 +115,6 @@ All participants in this project are majoring in Computer Science Engieneering, 
 | 👩🏻‍💻 Sua Jang (Leader) | sooa9918@dgu.ac.kr     | https://github.com/sua1223        | Back-end, Image Processing    |
 
 ## Demo
-youtube link
 ```
-youtube link
+https://www.youtube.com/watch?v=2aFOzoOaKmU
 ```
-You can see the pages distributed through heroku.
-```
-heroku link
-```
-
-## License
