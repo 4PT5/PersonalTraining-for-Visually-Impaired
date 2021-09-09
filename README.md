@@ -2,7 +2,7 @@
 
 ![4pt5](https://i.esdrop.com/d/j09wmqn009xs/fRGaFyj08q.png)
 <br>
-**PersonalTraining for Visually Imapired**은 ***2021 공개SW 개발자 대회***를 위한 프로젝트로, 사회문제형 과제 가운데 사회적 약자를 위한 시스템이다. 해당 프로젝트는 저시력자를 포함한 시각 장애인을 위한 퍼스널 트레이닝(PT) 서비스를 제공하기 위해 음성인식과 영상처리만으로도 사용자가 운동할 수 있도록 도움을 주기 위한 목적으로 진행된다.
+**PersonalTraining for Visually Imapired**은 ***2021 공개SW 개발자 대회***를 위한 프로젝트로, 사회문제형 과제 가운데 사회적 약자를 위한 시스템이다. 해당 프로젝트는 시각 장애인을 위한 퍼스널 트레이닝(PT) 서비스를 제공하기 위해 영상처리와 음성인식만으로도 사용자가 운동할 수 있도록 도움을 주기 위한 목적으로 진행된다.
 
 **PersonalTraining for Visually Imapired** is a project for the ***2021 Open SW Developer Conference*** and is a system for the socially disadvantaged among social problem-type tasks. In order to provide personal training services for visually impaired people, which include low vision, it helps users to exercise only through voice recognition and image processing.
 
@@ -115,6 +115,4 @@ All participants in this project are majoring in Computer Science Engieneering, 
 | 👩🏻‍💻 Sua Jang (Leader) | sooa9918@dgu.ac.kr     | https://github.com/sua1223        | Back-end, Image Processing    |
 
 ## Demo
-```
-https://www.youtube.com/watch?v=2aFOzoOaKmU
-```
+[Youtube-Link](https://www.youtube.com/watch?v=2aFOzoOaKmU)
