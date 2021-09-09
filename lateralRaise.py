@@ -6,9 +6,11 @@ CNT = 0
 
 
 def getDegree(key1, key2, key3):
-    x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - \
-        math.atan((key3[0] - key2[0]) / (key3[1] - key2[1]))
-    return x*180/math.pi
+    try:
+        x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - math.atan((key3[0] - key2[0]) / (key3[1] - key2[1]))
+        return abs(x*180/math.pi)
+    except:
+        getDegree(key1, key2, key3)
 
 
 def setting(exCode):
@@ -27,16 +29,10 @@ def setting(exCode):
     up_right_slope_LIMIT = abs(
         (up_arr[6][0]-up_arr[10][0]) / (up_arr[6][1]-up_arr[10][1]))
 
-    print("왼 up 손목-어깨 기울기: ", up_left_slope_LIMIT)
-    print("오 up 손목-어깨 기울기: ", up_right_slope_LIMIT)
-
     down_left_slope_LIMIT = abs(
         (down_arr[9][0]-down_arr[5][0]) / (down_arr[9][1]-down_arr[5][1]))
     down_right_slope_LIMIT = abs(
         (down_arr[10][0]-down_arr[6][0]) / (down_arr[10][1]-down_arr[6][1]))
-
-    print("왼 down 손목-어깨 기울기: ", down_left_slope_LIMIT)
-    print("오 down 손목-어깨 기울기: ", down_right_slope_LIMIT)
 
     cnt_flag = True
 
@@ -50,15 +46,18 @@ def raiseDown(keypoint):
                       [0]) / (keypoint[6][1]-keypoint[10][1]))
 
     value = 10
+    # 가만히 서있는지 확인.
+    if keypoint[9][0] > keypoint[18][0]:
+        return False
 
-    if(1 <= left_slope <= 8):
+    if(1 <= left_slope <= 10):
         flag_l = True
     else:
         tts.q.queue.clear()
         tts.q.put("1: 왼쪽 팔을 내려주세요.")
         flag_l = False
 
-    if(1 <= right_slope <= 8):
+    if(1 <= right_slope <= 10):
         flag_r = True
     else:
         tts.q.queue.clear()
@@ -83,6 +82,10 @@ def raiseUp(keypoint):
 
     value = 30
 
+    # 가만히 서있는지 확인.
+    if keypoint[9][0] > keypoint[18][0]:
+        return False
+
     if(0 <= left_slope <= 0.5):
         flag_l = True
     else:
@@ -104,7 +107,6 @@ def raiseUp(keypoint):
 
 
 def postureCorrection(keypoint):
-    print("=========================")
     if(raiseUp(keypoint)):
         tts.q.queue.clear()
         tts.q.put("레터럴 레이즈 자세를 잘 잡으셨어요!")
@@ -131,7 +133,6 @@ def lateralRaise_count(keypoint):
     else:
         flag_r = False
 
-    print(cnt_flag)
     if cnt_flag and flag_l and flag_r:
         cnt_flag = False
         return True

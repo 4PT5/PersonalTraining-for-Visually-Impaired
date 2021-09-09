@@ -4,7 +4,7 @@ from speechRecognition import stt
 
 def selectExercise():
     tts.q.queue.clear()
-    tts.q.put("어떤 운동을 진행하시겠습니까? 번호로 말해주세요. 1: 스쿼트, 2: 숄더프레스, 3: 레터럴레이즈")
+    tts.q.put("어떤 운동을 진행하시겠습니까? 번호로 말해주세요. 일번: 스쿼트, 이번: 숄더프레스, 삼번: 레터럴레이즈")
     exercise = int(stt.sttFunction())
 
     global exerciseCode
@@ -55,5 +55,5 @@ def isSide(keypoint):
         return True
     else:
         tts.q.queue.clear()
-        tts.q.put("정면입니다.")
+        tts.q.put("측면으로 서주세요.")
         return False
