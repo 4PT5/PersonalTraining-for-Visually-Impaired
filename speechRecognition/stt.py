@@ -19,11 +19,11 @@ def sttFunction():
         print(result)
 
         # 결과
-        if '일번' in result or '1번' in result:
+        if '일번' in result or '1번' in result or '1' in result or '일' in result:
             return 1
-        elif '이번' in result or '2번' in result:
+        elif '이번' in result or '2번' in result or '2' in result:
             return 2
-        elif '삼번' in result or '3번' in result:
+        elif '삼번' in result or '3번' in result or '3' in result or '삼' in result:
             return 3
         else:
             print('다시 말하세요.')

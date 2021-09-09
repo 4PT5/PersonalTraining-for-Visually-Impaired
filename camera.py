@@ -46,7 +46,7 @@ def gen(camera):
         start = time.time()
         frame_count = 0
         cnt = 0
-        cycle = 4
+        cycle = 3
         init = True
         init2 = False
         init3 = False
@@ -108,17 +108,17 @@ def gen(camera):
                         init3 = True
 
                 elif init2:
-                    if exerciseCode == 1 and ready.isSide(keypoint_coords[0]):
+                    if exerciseCode == 1 and cnt % 2 == 0 and ready.isSide(keypoint_coords[0]):
                         init2 = False
                         init3 = True
                         squat.setting(exerciseCode)
                         tts.q.put(
-                            "스쿼트는 대표적인 하체운동이며, 준비자세는 ~ 하는 방법 ~. 준비 자세를 잡아주세요.")
+                            "두 발을 골반 너비로 벌리고 허벅지와 무릎이 수평이 될때까지 천천히 앉았다 일어서주세요. 이때 무릎은 발끝 앞으로 나오지않도록 주의하시고 허리는 곧게 펴주세요. 스쿼트를 1회 진행해주세요.")
                     elif exerciseCode == 2:
                         if init3:
                             shoulderPress.setting(exerciseCode)
                             tts.q.put(
-                                "숄더프레스는 대표적인 어깨운동이며, 준비자세는 ~ 하는 방법 ~. 준비 자세를 잡아주세요.")
+                                "손이 귀와 수평이 되고 팔꿈치가 직각이 되도록 위치 시킨후, 이두근이 귀에 닿는 느낌으로 손을 머리위로 들어올려주세요. 이후, 천천히 저항을 느끼면서 다시 내려옵니다.")
                             init3 = False
                         if shoulderPress.isDown(keypoint_coords[0]):
                             init2 = False
@@ -156,21 +156,21 @@ def gen(camera):
 
                 else:
                     if exerciseCode == 1:
-                        if cnt == 30:
+                        if cnt == 32:
                             tts.q.put("시작해주세요.")
                         elif cnt > 30 and squat.counting(keypoint_coords[0]):
                             if squat.CNT == 5:
                                 tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
                     elif exerciseCode == 2:
-                        if cnt == 30:
+                        if cnt == 32:
                             tts.q.put("시작해주세요.")
                         elif cnt > 30 and shoulderPress.counting(keypoint_coords[0]):
                             if shoulderPress.CNT == 5:
                                 tts.q.put("숄더프레스 5회를 마쳤습니다. 수고하셨습니다.")
                                 break
                     elif exerciseCode == 3:
-                        if cnt == 30:
+                        if cnt == 32:
                             tts.q.put("시작해주세요.")
                         elif cnt > 30 and lateralRaise.counting(keypoint_coords[0]):
                             if lateralRaise.CNT == 5:
@@ -184,6 +184,8 @@ def gen(camera):
 
             overlay_image = cv2.resize(overlay_image, dsize=(
                 1240, 920), interpolation=cv2.INTER_AREA)
+
+            overlay_image = cv2.flip(overlay_image, 1)
 
             frame_count += 1
 
