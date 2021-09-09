@@ -50,6 +50,7 @@ def gen(camera):
         init = True
         init2 = False
         init3 = False
+        finish = False
 
         exerciseCode = ready.exerciseCode
 
@@ -159,24 +160,28 @@ def gen(camera):
                         if cnt == 32:
                             tts.q.put("시작해주세요.")
                         elif cnt > 30 and squat.counting(keypoint_coords[0]):
-                            if squat.CNT == 5:
+                            if squat.CNT == 2:
                                 tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
-                                break
+                                finish = True
+                                # break
                     elif exerciseCode == 2:
                         if cnt == 32:
                             tts.q.put("시작해주세요.")
                         elif cnt > 30 and shoulderPress.counting(keypoint_coords[0]):
                             if shoulderPress.CNT == 5:
                                 tts.q.put("숄더프레스 5회를 마쳤습니다. 수고하셨습니다.")
-                                break
+                                finish = True
+                                # break
                     elif exerciseCode == 3:
                         if cnt == 32:
                             tts.q.put("시작해주세요.")
                         elif cnt > 30 and lateralRaise.counting(keypoint_coords[0]):
                             if lateralRaise.CNT == 5:
                                 tts.q.put("레터럴레이즈 5회를 마쳤습니다. 수고하셨습니다.")
-                                break
+                                finish = True
+                                # break
 
+                                    
             # TODO this isn't particularly fast, use GL for drawing and display someday...
             overlay_image = posenet.draw_skel_and_kp(
                 display_image, pose_scores, keypoint_scores, keypoint_coords,
@@ -189,8 +194,17 @@ def gen(camera):
 
             frame_count += 1
 
-            ret, jpeg = cv2.imencode('.jpg', overlay_image)
-            frame = jpeg.tobytes()
-
-            yield (b'--frame\r\n'
+            if finish == False:
+                ret, jpeg = cv2.imencode('.jpg', overlay_image)
+                frame = jpeg.tobytes()
+                yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            else:
+                jpeg = cv2.imread('images/finish.png', cv2.IMREAD_COLOR)
+                tmp, frame = cv2.imencode('.JPEG', jpeg)
+                yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame.tostring() + b'\r\n')   
+                break
+
+      
+        
