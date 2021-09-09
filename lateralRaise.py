@@ -7,7 +7,8 @@ CNT = 0
 
 def getDegree(key1, key2, key3):
     try:
-        x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - math.atan((key3[0] - key2[0]) / (key3[1] - key2[1]))
+        x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - \
+            math.atan((key3[0] - key2[0]) / (key3[1] - key2[1]))
         return abs(x*180/math.pi)
     except:
         getDegree(key1, key2, key3)
@@ -50,18 +51,18 @@ def raiseDown(keypoint):
     if keypoint[9][0] > keypoint[18][0]:
         return False
 
-    if(1 <= left_slope <= 10):
+    if(1 <= left_slope <= 20):
         flag_l = True
     else:
         tts.q.queue.clear()
-        tts.q.put("1: 왼쪽 팔을 내려주세요.")
+        tts.q.put("왼쪽 팔을 내려주세요.")
         flag_l = False
 
-    if(1 <= right_slope <= 10):
+    if(1 <= right_slope <= 20):
         flag_r = True
     else:
         tts.q.queue.clear()
-        tts.q.put("1: 오른쪽 팔을 내려주세요.")
+        tts.q.put("오른쪽 팔을 내려주세요.")
         flag_r = False
 
     if flag_l and flag_r:
@@ -73,8 +74,6 @@ def raiseDown(keypoint):
 def raiseUp(keypoint):
     # keypoint[5] : 왼쪽 어깨, keypoint[7] : 왼쪽 팔꿈치, keypoint[9] : 왼쪽 손목
     # keypoint[6] : 오른쪽 어깨, keypoint[8] : 오른쪽 팔꿈치, keypoint[10] : 오른쪽 손목
-    left_angle = getDegree(keypoint[5], keypoint[7], keypoint[9])
-    right_angle = getDegree(keypoint[6], keypoint[8], keypoint[10])
     left_slope = abs((keypoint[9][0]-keypoint[5][0]) /
                      (keypoint[9][1]-keypoint[5][1]))
     right_slope = abs((keypoint[10][0]-keypoint[6]
@@ -90,14 +89,14 @@ def raiseUp(keypoint):
         flag_l = True
     else:
         tts.q.queue.clear()
-        tts.q.put("1: 왼쪽 팔을 수직으로 올려주세요.")
+        tts.q.put("왼쪽 팔을 수직으로 올려주세요.")
         flag_l = False
 
     if(0 <= right_slope <= 0.5):
         flag_r = True
     else:
         tts.q.queue.clear()
-        tts.q.put("1: 오른쪽 팔을 수직으로 올려주세요.")
+        tts.q.put("오른쪽 팔을 수직으로 올려주세요.")
         flag_r = False
 
     if flag_l and flag_r:

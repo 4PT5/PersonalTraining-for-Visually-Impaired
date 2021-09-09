@@ -7,7 +7,8 @@ CNT = 0
 
 def getDegree(key1, key2, key3):
     try:
-        x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - math.atan((key3[0] - key2[0]) / (key3[1] - key2[1]))
+        x = math.atan((key1[0] - key2[0]) / (key1[1] - key2[1])) - \
+            math.atan((key3[0] - key2[0]) / (key3[1] - key2[1]))
         return abs(x*180/math.pi)
     except:
         getDegree(key1, key2, key3)

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,10 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-igez#v$^xjpl&6wx-oo%nw6+od61%wc$vbithjl-3yde-nf^aj'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY', 'django-insecure-igez#v$^xjpl&6wx-oo%nw6+od61%wc$vbithjl-3yde-nf^aj')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
 ALLOWED_HOSTS = []
 
@@ -39,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'main',
-    'rest_framework', # DRF
-    'corsheaders', # django-cors-headers
+    'rest_framework',  # DRF
+    'corsheaders',  # django-cors-headers
 ]
 
 # rest_framework 추가
@@ -52,7 +53,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',     # corsheaders 추가
-    'django.middleware.common.CommonMiddleware', # corsheaders 추가
+    'django.middleware.common.CommonMiddleware',  # corsheaders 추가
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,8 +65,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'http://127.0.0.1:3000' ,'http://localhost:3000'
-] 
+    'http://127.0.0.1:3000', 'http://localhost:3000'
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
