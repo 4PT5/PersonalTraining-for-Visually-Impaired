@@ -8,11 +8,11 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-flag = 0
 
 def index(request):
     ready.selectExercise()
     return render(request, 'main/main.html')
+
 
 def start(request):
     tts.q.queue.clear()

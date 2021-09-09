@@ -6,8 +6,7 @@ def sttFunction():
         r = sr.Recognizer()
 
         with sr.Microphone() as source:
-            #print("Say something!")
-            audio = r.listen(source,5,5)
+            audio = r.listen(source, 10, 3)
 
         # 구글 웹 음성 API로 인식하기 (하루에 제한 50회)
         try:
