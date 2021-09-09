@@ -50,6 +50,14 @@
         transition: 800ms ease all;
       } */
   </style>
+  <script>
+    window.addEventListener("keydown", (e) => {
+      const key = document.getElementById(e.key);
+      if (key) key.classList.add("pressed");
+      location.href="http://127.0.0.1:8000";
+    
+    });
+  </script>
 </head>
 
 <body>
