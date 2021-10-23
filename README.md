@@ -116,3 +116,6 @@ All participants in this project are majoring in Computer Science Engieneering, 
 
 ## Demo
 [Youtube-Link](https://www.youtube.com/watch?v=2aFOzoOaKmU)
+
+## License
+PersonalTraining-for-Visually-Impaired is released under the Apache License 2.0.
