@@ -11,6 +11,7 @@ class TTSThread(threading.Thread):
         self.start()
 
     def run(self):
+        global tts_engine
         tts_engine = pyttsx3.init()
         tts_engine.startLoop(False)
         t_running = True

@@ -51,6 +51,8 @@ def gen(camera):
         init = True
         init2 = False
         init3 = False
+        flag_sp = True
+        flag_lr = True
         finish = False
 
         exerciseCode = ready.exerciseCode
@@ -111,28 +113,34 @@ def gen(camera):
                         init3 = True
 
                 elif init2:
-                    if exerciseCode == 1 and cnt % 2 == 0 and ready.isSide(keypoint_coords[0]):
+                    if exerciseCode == 1 and ready.isSide(keypoint_coords[0]):
                         init2 = False
                         init3 = True
                         squat.setting(exerciseCode)
                         tts.q.put(
                             "스쿼트 자세 설명입니다.. 두 발을 골반 너비로 벌리고, 허벅지와 무릎이 수평이 될때까지 천천히 앉았다 일어서세요. 이때 무릎은 발끝 앞으로 나오지않도록 주의하시고, 허리는 곧게 펴세요.... 스쿼트를 1회 진행하세요.")
                     elif exerciseCode == 2:
-                        if init3:
+                        if flag_sp:
+                            if ready.isFront(keypoint_coords[0]):
+                                flag_sp = False
+                        elif init3:
                             shoulderPress.setting(exerciseCode)
                             tts.q.put(
                                 "숄더프레스 자세 설명입니다.. 손이 귀와 수평이 되고, 팔꿈치가 직각이 되도록 위치 시킨후, 이두근이 귀에 닿는 느낌으로 손을 머리위로 들어올리세요. 이후, 천천히 저항을 느끼면서 다시 내려옵니다.... 숄더프레스를 1회 진행하세요.")
                             init3 = False
-                        if shoulderPress.isDown(keypoint_coords[0]):
+                        elif shoulderPress.isDown(keypoint_coords[0]):
                             init2 = False
                             init3 = True
                     elif exerciseCode == 3:
-                        if init3:
+                        if flag_lr:
+                            if ready.isFront(keypoint_coords[0]):
+                                flag_lr = False
+                        elif init3:
                             lateralRaise.setting(exerciseCode)
                             tts.q.put(
                                 "리터럴 레이즈 자세 설명입니다.. 승모근에 힘을 빼고, 무릎을 살짝 굽힌 상태로, 양쪽으로 팔을 밀어올린다는 느낌으로 양 팔을 어깨 높이까지 들어올리세요. 내릴 때는, 천천히 내려주시고, 이 두 동작을 반복해주세요.... 레터럴 레이즈를 1회 진행하세요.")
                             init3 = False
-                        if lateralRaise.raiseDown(keypoint_coords[0]):
+                        elif lateralRaise.raiseDown(keypoint_coords[0]):
                             init2 = False
                             init3 = True
                 elif init3:

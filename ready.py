@@ -5,6 +5,11 @@ from speechRecognition import stt
 def selectExercise():
     tts.q.queue.clear()
     tts.q.put("어떤 운동을 진행하시겠습니까? 번호로 말해주세요. 일번: 스쿼트, 이번: 숄더프레스, 삼번: 레터럴레이즈")
+    flag = True
+    print("Start")
+    while flag:
+        flag = tts.tts_engine.isBusy()
+    print("end")
     exercise = int(stt.sttFunction())
 
     global exerciseCode
@@ -57,3 +62,18 @@ def isSide(keypoint):
         tts.q.queue.clear()
         tts.q.put("측면으로 서주세요.")
         return False
+
+
+def isFront(keypoint):
+    # keypoint[11][1]: 왼쪽 골반 x좌표, keypoint[12][1]: 오른쪽 골반 x좌표
+    pelvis = abs(keypoint[11][1] - keypoint[12][1])
+    limit = 30
+
+    if pelvis <= limit:
+        tts.q.queue.clear()
+        tts.q.put("정면으로 서주세요.")
+        return False
+    else:
+        tts.q.queue.clear()
+        tts.q.put("정면입니다.")
+        return True
