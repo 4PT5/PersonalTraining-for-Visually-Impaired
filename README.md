@@ -2,7 +2,7 @@
 
 ![4pt5](https://i.esdrop.com/d/j09wmqn009xs/fRGaFyj08q.png)
 <br>
-**PersonalTraining for Visually Imapired**은 ***2021 공개SW 개발자 대회***를 위한 프로젝트로, 사회문제형 과제 가운데 사회적 약자를 위한 시스템이다. 해당 프로젝트는 저시력자를 포함한 시각 장애인을 위한 퍼스널 트레이닝(PT) 서비스를 제공하기 위해 음성인식과 영상처리만으로도 사용자가 운동할 수 있도록 도움을 주기 위한 목적으로 진행된다.
+**PersonalTraining for Visually Imapired**은 ***2021 공개SW 개발자 대회***를 위한 프로젝트로, 사회문제형 과제 가운데 사회적 약자를 위한 시스템이다. 해당 프로젝트는 시각 장애인을 위한 퍼스널 트레이닝(PT) 서비스를 제공하기 위해 영상처리와 음성인식만으로도 사용자가 운동할 수 있도록 도움을 주기 위한 목적으로 진행된다.
 
 **PersonalTraining for Visually Imapired** is a project for the ***2021 Open SW Developer Conference*** and is a system for the socially disadvantaged among social problem-type tasks. In order to provide personal training services for visually impaired people, which include low vision, it helps users to exercise only through voice recognition and image processing.
 
@@ -40,7 +40,7 @@ tensorflow==1.15.5
 ```
 
 ## System Architecture
-<img src="https://i.esdrop.com/d/j09wmqn009xs/xB1TF4AXSQ.png" width="80%" height="60%">
+<img src="https://i.esdrop.com/d/j09wmqn009xs/TZtVCFOK9u.png" width="80%" height="60%">
 
 ## Introduction
 ### Project purpose
@@ -99,9 +99,9 @@ The system runs on web.
 *Image Processing:* openCV 3.4.13, tensorflow-posenet 1.15.5 
 
 ## Browser Support
-![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png) |
---- | --- | --- |
-Latest ✔ | Latest ✔ | 10+ ✔ |
+![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png) |
+--- | --- |
+Latest ✔| 10+ ✔ |
 
 ## Contributors
 All participants in this project are majoring in Computer Science Engieneering, Dongguk University🏫
@@ -115,13 +115,7 @@ All participants in this project are majoring in Computer Science Engieneering, 
 | 👩🏻‍💻 Sua Jang (Leader) | sooa9918@dgu.ac.kr     | https://github.com/sua1223        | Back-end, Image Processing    |
 
 ## Demo
-youtube link
-```
-youtube link
-```
-You can see the pages distributed through heroku.
-```
-heroku link
-```
+[Youtube-Link](https://www.youtube.com/watch?v=2aFOzoOaKmU)
 
 ## License
+PersonalTraining-for-Visually-Impaired is released under the Apache License 2.0.
