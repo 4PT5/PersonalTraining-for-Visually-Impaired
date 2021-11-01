@@ -148,21 +148,24 @@ def gen(camera):
                         if squat.postureCorrection(keypoint_coords[0]):
                             tts.q.queue.clear()
                             tts.q.put(
-                                "스쿼트 자세를 잘 잡으셨어요!,,, 잠시후 카운트를 시작합니다. 5회 반복해주세요.")
+                                "스쿼트 자세를 잘 잡으셨어요!,,, 잠시후 카운트를 시작합니다.")
+                            tts.q.put(str(ready.countNumber) + "회 반복해주세요.")
                             cnt = 2
                             init3 = False
                     elif exerciseCode == 2:
                         if shoulderPress.postureCorrection(keypoint_coords[0]):
                             tts.q.queue.clear()
                             tts.q.put(
-                                "숄더 프레스 자세를 잘 잡으셨어요!,,, 잠시후 카운트를 시작합니다. 5회 반복해주세요.")
+                                "숄더 프레스 자세를 잘 잡으셨어요!,,, 잠시후 카운트를 시작합니다.")
+                            tts.q.put(str(ready.countNumber) + "회 반복해주세요.")
                             cnt = 2
                             init3 = False
                     elif exerciseCode == 3:
                         if lateralRaise.postureCorrection(keypoint_coords[0]):
                             tts.q.queue.clear()
                             tts.q.put(
-                                "레터럴 레이즈 자세를 잘 잡으셨어요! ,,, 잠시후 카운트를 시작합니다. 5회 반복해주세요.")
+                                "레터럴 레이즈 자세를 잘 잡으셨어요! ,,, 잠시후 카운트를 시작합니다.")
+                            tts.q.put(str(ready.countNumber) + "회 반복해주세요.")
                             cnt = 2
                             init3 = False
 
@@ -171,24 +174,27 @@ def gen(camera):
                         if cnt == 33:
                             tts.q.put("시작해주세요.")
                         elif cnt > 33 and squat.counting(keypoint_coords[0]):
-                            if squat.CNT == 5:
-                                tts.q.put("스쿼트 5회를 마쳤습니다. 수고하셨습니다.")
+                            if squat.CNT == ready.countNumber:
+                                tts.q.put("스쿼트" + str(ready.countNumber) +
+                                          " 회를 마쳤습니다. 수고하셨습니다.")
                                 squat.CNT = 0
                                 finish = True
                     elif exerciseCode == 2:
                         if cnt == 33:
                             tts.q.put("시작해주세요.")
                         elif cnt > 33 and shoulderPress.counting(keypoint_coords[0]):
-                            if shoulderPress.CNT == 5:
-                                tts.q.put("숄더프레스 5회를 마쳤습니다. 수고하셨습니다.")
+                            if shoulderPress.CNT == ready.countNumber:
+                                tts.q.put(
+                                    "숄더프레스" + str(ready.countNumber) + " 회를 마쳤습니다. 수고하셨습니다.")
                                 shoulderPress.CNT = 0
                                 finish = True
                     elif exerciseCode == 3:
                         if cnt == 33:
                             tts.q.put("시작해주세요.")
                         elif cnt > 33 and lateralRaise.counting(keypoint_coords[0]):
-                            if lateralRaise.CNT == 5:
-                                tts.q.put("레터럴레이즈 5회를 마쳤습니다. 수고하셨습니다.")
+                            if lateralRaise.CNT == ready.countNumber:
+                                tts.q.put(
+                                    "레터럴레이즈" + str(ready.countNumber) + " 회를 마쳤습니다. 수고하셨습니다.")
                                 lateralRaise.CNT = 0
                                 finish = True
 

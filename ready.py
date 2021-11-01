@@ -12,8 +12,25 @@ def selectExercise():
     print("end")
     exercise = int(stt.sttFunction())
 
+    if exercise == 1:
+        tts.q.put("스쿼트를 몇 회 반복하겠습니까? 번호로 말해주세요. 일번 : 5회, 이번 : 10회, 삼번 : 15회")
+    elif exercise == 2:
+        tts.q.put("숄드프레스를 몇 회 반복하겠습니까? 번호로 말해주세요. 일번 : 5회, 이번 : 10회, 삼번 : 15회")
+    elif exercise == 3:
+        tts.q.put("레터럴레이즈를 몇 회 반복하겠습니까? 번호로 말해주세요. 일번 : 5회, 이번 : 10회, 삼번 : 15회")
+
+    flag = True
+    print("Start")
+    while flag:
+        flag = tts.tts_engine.isBusy()
+    print("end")
+
+    countNum = int(stt.sttFunction()) * 5
+    print(countNum)
+    global countNumber
     global exerciseCode
     exerciseCode = 0
+    countNumber = countNum
 
     if exercise == 1:
         tts.q.queue.clear()
